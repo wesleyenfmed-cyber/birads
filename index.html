@@ -1,0 +1,453 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora BI-RADS - US Mamária</title>
+<meta name="theme-color" content="#1d4ed8">
+<meta name="description" content="Ferramenta auxiliar para montar laudos de ultrassonografia mamária e axilar.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--p:#1d4ed8;--bg:#f1f5f9;--bd:#cbd5e1}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;padding:12px;background:var(--bg);color:#1e293b}
+main{max-width:760px;margin:auto}
+.card{background:white;padding:16px;border-radius:13px;
+margin-bottom:12px;box-shadow:0 2px 6px #0001}
+h1{text-align:center;color:#1e3a8a;font-size:21px}
+h2{font-size:16px;color:#1e40af;border-left:4px solid var(--p);
+padding-left:9px}
+label{display:block;font-size:12px;font-weight:bold;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);
+border-radius:8px;background:#f8fafc;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+button{padding:12px;border:0;border-radius:9px;background:var(--p);
+color:white;font-weight:bold;cursor:pointer;margin-top:8px}
+button.secondary{background:#475569}
+button.green{background:#059669}
+button.red{background:#b91c1c}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips label{margin:0;padding:8px 10px;border:1px solid var(--bd);
+border-radius:20px;background:#f8fafc;font-size:12px;cursor:pointer}
+.chips input{width:auto}
+.item{padding:12px;background:#eff6ff;border-radius:9px;margin:8px 0}
+textarea{min-height:300px;line-height:1.5}
+small{color:#64748b}
+.fotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.foto-item{border:1px solid var(--bd);border-radius:9px;padding:8px;break-inside:avoid}
+.foto-item img{width:100%;height:auto;display:block;border-radius:6px}
+@media print{
+.no-print{display:none!important}
+body{background:white}
+.fotos{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<h1>🩺 Calculadora BI-RADS®</h1>
+<p style="text-align:center;color:#64748b;font-size:12px">
+ULTRASSONOGRAFIA MAMÁRIA E AXILAR
+</p>
+
+<div class="card no-print">
+<h2>1. Identificação</h2>
+<div class="grid">
+<div><label>Paciente</label><input id="paciente"></div>
+<div><label>Data do exame</label><input type="date" id="data"></div>
+<div><label>Exame anterior</label>
+<select id="comparacao">
+<option>Não informado</option>
+<option>Sem exames anteriores</option>
+<option>Comparativo realizado</option>
+</select></div>
+<div><label>Indicação clínica</label><input id="indicacao"></div>
+</div>
+</div>
+
+<div class="card no-print">
+<h2>2. Composição mamária</h2>
+<label>Ecotextura de fundo</label>
+<select id="ecotextura">
+<option>Homogênea adiposa</option>
+<option>Homogênea fibroglandular</option>
+<option>Heterogênea</option>
+</select>
+
+<label>Componente tecidual glandular (GTC)</label>
+<select id="gtc">
+<option>Mínimo (&lt;25%)</option>
+<option selected>Leve (25–49%)</option>
+<option>Moderado (50–74%)</option>
+<option>Acentuado (≥75%)</option>
+</select>
+</div>
+
+<div class="card no-print">
+<h2>3. Achados mamários</h2>
+<label>Status</label>
+<select id="status">
+<option>Sem achados focais</option>
+<option>Com achados focais</option>
+</select>
+
+<div id="areaLesoes" hidden>
+<div id="formLesao">
+<div class="item">
+<strong>Características da lesão</strong>
+
+<label>Lateralidade</label>
+<select id="lado">
+<option>Direita</option>
+<option>Esquerda</option>
+</select>
+
+<label>Quadrante / Região</label>
+<select id="quadrante">
+<option>QSL</option><option>QSM</option>
+<option>QIL</option><option>QIM</option>
+<option>Retroareolar</option>
+<option>Prolongamento axilar</option>
+<option>Região central</option>
+</select>
+
+<label>Horário</label>
+<select id="horario">
+<option>Central</option>
+<option>12h</option><option>1h</option>
+<option>2h</option><option>3h</option>
+<option>4h</option><option>5h</option>
+<option>6h</option><option>7h</option>
+<option>8h</option><option>9h</option>
+<option>10h</option><option>11h</option>
+</select>
+
+<div class="grid3">
+<div><label>Medida 1 (mm)</label><input id="d1" type="number" step=".1"></div>
+<div><label>Medida 2 (mm)</label><input id="d2" type="number" step=".1"></div>
+<div><label>Medida 3 (mm)</label><input id="d3" type="number" step=".1"></div>
+</div>
+
+<div class="grid">
+<div><label>Distância do mamilo (cm)</label><input id="dm" type="number" step=".1"></div>
+<div><label>Distância da pele (mm)</label><input id="dp" type="number" step=".1"></div>
+</div>
+
+<label>Tipo de achado</label>
+<select id="tipo" onchange="atualizarTipo()">
+<option>Nódulo (massa)</option>
+<option>Caso especial benigno</option>
+<option>Lesão não nodular (NML)</option>
+</select>
+
+<div id="nodulo">
+<label>Forma</label>
+<select id="forma">
+<option>Oval</option><option>Redonda</option>
+<option>Irregular</option>
+</select>
+
+<label>Orientação</label>
+<select id="orientacao">
+<option>Paralela</option>
+<option>Não paralela</option>
+</select>
+
+<label>Margens</label>
+<select id="margem">
+<option>Circunscritas</option>
+<option>Indistintas</option>
+<option>Angulares</option>
+<option>Microlobuladas</option>
+<option>Espiculadas</option>
+</select>
+
+<label>Ecogenicidade</label>
+<select id="ecogenicidade">
+<option>Anecoica</option>
+<option>Hiperecoica</option>
+<option>Isoecoica</option>
+<option>Hipoecoica</option>
+<option>Heterogênea</option>
+</select>
+
+<label>Características acústicas posteriores</label>
+<select id="posterior">
+<option>Sem características acústicas posteriores</option>
+<option>Reforço acústico posterior</option>
+<option>Sombra acústica posterior</option>
+<option>Padrão combinado</option>
+</select>
+
+<label>Características adicionais</label>
+<div class="chips">
+<label><input type="checkbox" name="adicional" value="Calcificações"> Calcificações</label>
+<label><input type="checkbox" name="adicional" value="Distorção arquitetural"> Distorção arquitetural</label>
+<label><input type="checkbox" name="adicional" value="Alteração ductal"> Alteração ductal</label>
+<label><input type="checkbox" name="adicional" value="Alteração da pele"> Alteração da pele</label>
+</div>
+</div>
+
+<div id="especial" hidden>
+<label>Caso especial benigno</label>
+<select id="caso">
+<option>Cisto simples</option>
+<option>Linfonodo intramamário típico</option>
+<option>Implante mamário</option>
+<option>Necrose gordurosa</option>
+<option>Microcistos agrupados</option>
+<option>Cisto complicado</option>
+</select>
+</div>
+
+<div id="nml" hidden>
+<label>Distribuição</label>
+<select id="distribuicao">
+<option>Focal</option><option>Linear</option>
+<option>Segmentar</option><option>Regional</option>
+<option>Difusa</option>
+</select>
+
+<label>Características da NML</label>
+<select id="caracteristicaNML">
+<option>Alteração do tecido de fundo</option>
+<option>Área hipoecoica</option>
+<option>Alteração arquitetural</option>
+<option>Outro</option>
+</select>
+</div>
+
+<label>Observações da lesão</label>
+<textarea id="obsLesao" style="min-height:65px"></textarea>
+</div>
+
+<button class="green" onclick="adicionarLesao()">+ Adicionar lesão</button>
+<div id="listaLesoes"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Registro fotográfico</h2>
+<div class="no-print">
+<label>Anexar imagens do exame</label>
+<input type="file" id="fotosExame" accept="image/*" capture="environment" multiple>
+<small>As imagens ficam nesta página enquanto ela estiver aberta e aparecem na impressão. Não são incorporadas ao texto copiado do laudo.</small>
+</div>
+<div id="galeriaFotos" class="fotos"></div>
+</div>
+
+<div class="card no-print">
+<h2>4. Avaliação axilar</h2>
+<label>Axila direita</label>
+<select id="axilaD">
+<option>Linfonodos com aspecto habitual</option>
+<option>Linfonodos com alterações suspeitas</option>
+<option>Não identificados</option>
+<option>Não avaliados</option>
+</select>
+
+<label>Axila esquerda</label>
+<select id="axilaE">
+<option>Linfonodos com aspecto habitual</option>
+<option>Linfonodos com alterações suspeitas</option>
+<option>Não identificados</option>
+<option>Não avaliados</option>
+</select>
+
+<label>Observações axilares</label>
+<textarea id="obsAxila" style="min-height:70px"></textarea>
+</div>
+
+<div class="card no-print">
+<h2>5. Classificação final</h2>
+<label>BI-RADS®</label>
+<select id="birads">
+<option value="0">0 - Incompleto</option>
+<option value="1">1 - Negativo</option>
+<option value="2">2 - Benigno</option>
+<option value="3">3 - Provavelmente benigno</option>
+<option value="4A">4A - Baixa suspeição</option>
+<option value="4B">4B - Suspeição intermediária</option>
+<option value="4C">4C - Alta suspeição</option>
+<option value="5">5 - Altamente sugestivo de malignidade</option>
+<option value="6">6 - Malignidade comprovada</option>
+</select>
+
+<label>Recomendação / Conduta</label>
+<textarea id="conduta" style="min-height:75px"></textarea>
+</div>
+
+<div class="card no-print">
+<h2>6. Laudo automático</h2>
+<button onclick="gerarLaudo()">GERAR LAUDO</button>
+<button class="secondary" onclick="window.print()">IMPRIMIR</button>
+<button class="green" onclick="copiar()">COPIAR LAUDO</button>
+</div>
+
+<div class="card">
+<h2>LAUDO DE ULTRASSONOGRAFIA</h2>
+<textarea id="laudo" placeholder="O laudo preenchido aparecerá aqui. Você poderá editar o texto antes de copiar ou imprimir."></textarea>
+</div>
+
+<p style="text-align:center;font-size:11px;color:#64748b">
+Ferramenta auxiliar. Conferir os descritores, a categoria BI-RADS e a conduta com o léxico oficial ACR antes de assinar o laudo.
+</p>
+
+</main>
+
+<script>
+let lesoes=[];
+
+function atualizarTipo(){
+let t=document.getElementById("tipo").value;
+document.getElementById("nodulo").hidden=t!=="Nódulo (massa)";
+document.getElementById("especial").hidden=t!=="Caso especial benigno";
+document.getElementById("nml").hidden=t!=="Lesão não nodular (NML)";
+}
+
+function atualizarStatus(){
+document.getElementById("areaLesoes").hidden =
+valor("status")==="Sem achados focais";
+}
+
+document.getElementById("status").onchange=atualizarStatus;
+
+function valor(id){
+return document.getElementById(id).value;
+}
+
+let fotosRegistradas=[];
+
+document.getElementById("fotosExame").addEventListener("change", function(event){
+  [...event.target.files].forEach(arquivo=>{
+    if(!arquivo.type.startsWith("image/")) return;
+    const url=URL.createObjectURL(arquivo);
+    fotosRegistradas.push({arquivo,url});
+  });
+  renderFotos();
+  event.target.value="";
+});
+
+function renderFotos(){
+  document.getElementById("galeriaFotos").innerHTML =
+    fotosRegistradas.map((foto,i)=>`
+      <div class="foto-item">
+        <img src="${foto.url}" alt="Registro fotográfico ${i+1}">
+        <small>${seguroTexto(foto.arquivo.name)}</small>
+        <button class="red no-print" onclick="removerFoto(${i})">Remover foto</button>
+      </div>
+    `).join("");
+}
+
+function seguroTexto(texto){
+  const el=document.createElement("span");
+  el.textContent=texto;
+  return el.innerHTML;
+}
+
+function removerFoto(i){
+  URL.revokeObjectURL(fotosRegistradas[i].url);
+  fotosRegistradas.splice(i,1);
+  renderFotos();
+}
+
+function adicionarLesao(){
+let t=valor("tipo");
+let descricao=
+`Mama ${valor("lado")}, ${valor("quadrante")}, ${valor("horario")}. `+
+`Dimensões: ${[valor("d1"),valor("d2"),valor("d3")].filter(Boolean).join(" x ")||"não informadas"} mm. `+
+`Distância do mamilo: ${valor("dm")||"não informada"} cm. `+
+`Distância da pele: ${valor("dp")||"não informada"} mm. `;
+
+if(t==="Nódulo (massa)"){
+let ad=[...document.querySelectorAll('input[name="adicional"]:checked')]
+.map(x=>x.value).join(", ");
+descricao+=`Nódulo ${valor("forma").toLowerCase()}, orientação ${valor("orientacao").toLowerCase()}, margens ${valor("margem").toLowerCase()}, ecogenicidade ${valor("ecogenicidade").toLowerCase()}, ${valor("posterior").toLowerCase()}. `;
+if(ad)descricao+=`Características adicionais: ${ad}. `;
+}
+if(t==="Caso especial benigno"){
+descricao+=`Caso especial: ${valor("caso")}. `;
+}
+if(t==="Lesão não nodular (NML)"){
+descricao+=`Lesão não nodular, distribuição ${valor("distribuicao").toLowerCase()}, característica: ${valor("caracteristicaNML")}. `;
+}
+if(valor("obsLesao"))descricao+=valor("obsLesao");
+
+lesoes.push(descricao);
+renderLesoes();
+}
+
+function renderLesoes(){
+document.getElementById("listaLesoes").innerHTML=
+lesoes.map((x,i)=>`<div class="item">
+<strong>Lesão ${i+1}</strong><p>${x}</p>
+<button class="red" onclick="remover(${i})">Remover</button>
+</div>`).join("");
+}
+
+function remover(i){
+lesoes.splice(i,1);
+renderLesoes();
+}
+
+function gerarLaudo(){
+let texto=`ULTRASSONOGRAFIA MAMÁRIA E AXILAR
+
+Paciente: ${valor("paciente")}
+Data: ${valor("data")}
+Indicação clínica: ${valor("indicacao")}
+
+COMPOSIÇÃO TECIDUAL:
+Ecotextura de fundo ${valor("ecotextura")}.
+Componente glandular: ${valor("gtc")}.
+
+ACHADOS:
+`;
+
+if(valor("status")==="Sem achados focais"){
+texto+="Não foram identificados achados focais mamários.\\n";
+}else{
+texto+=lesoes.length?
+lesoes.map((x,i)=>`Lesão ${i+1}: ${x}`).join("\\n\\n"):
+"Achados focais selecionados, sem descrição de lesões cadastradas.\\n";
+}
+
+texto+=`
+AVALIAÇÃO AXILAR:
+Axila direita: ${valor("axilaD")}.
+Axila esquerda: ${valor("axilaE")}.
+${valor("obsAxila")}
+
+COMPARAÇÃO:
+${valor("comparacao")}
+
+CONCLUSÃO:
+BI-RADS® ${valor("birads")}.
+${valor("conduta")}
+
+`;
+
+document.getElementById("laudo").value=texto;
+}
+
+function copiar(){
+let l=document.getElementById("laudo");
+l.select();
+document.execCommand("copy");
+alert("Laudo copiado.");
+}
+
+atualizarStatus();
+atualizarTipo();
+
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));
+}
+</script>
+</body>
+</html>

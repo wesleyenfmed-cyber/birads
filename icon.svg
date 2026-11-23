@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#1d4ed8"/>
+  <path d="M256 83c-78 0-141 63-141 141 0 48 24 90 60 115v48c0 23 19 42 42 42h78c23 0 42-19 42-42v-48c36-25 60-67 60-115 0-78-63-141-141-141zm-39 287v-20h78v20h-78zm39-249a103 103 0 0 1 61 186l-10 7v-50a51 51 0 1 0-102 0v50l-10-7a103 103 0 0 1 61-186zm-15 170a15 15 0 0 1 30 0v35h-30v-35z" fill="#fff"/>
+  <text x="256" y="453" text-anchor="middle" font-family="Arial,sans-serif" font-size="39" font-weight="700" fill="#fff">BI-RADS</text>
+</svg>
