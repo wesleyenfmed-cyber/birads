@@ -1,4 +1,4 @@
-const CACHE_NAME = "birads-us-v1";
+const CACHE_NAME = "birads-us-v2";
 const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {
