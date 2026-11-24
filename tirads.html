@@ -137,7 +137,7 @@ function scoreCurrent(){
  if(!recommendation&&(cat==="TR1"||cat==="TR2"))recommendation="Não há indicação de PAAF ou seguimento de rotina pelo ACR TI-RADS.";
  else if(!recommendation&&cat==="TR3")recommendation=max>=2.5?"Atinge o limiar de PAAF (≥ 2,5 cm).":max>=1.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 1,5 cm); não atinge limiar de PAAF.":"Não atinge os limiares de PAAF ou seguimento.";
  else if(!recommendation&&cat==="TR4")recommendation=max>=1.5?"Atinge o limiar de PAAF (≥ 1,5 cm).":max>=1?"Atinge o limiar de seguimento ultrassonográfico (≥ 1 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
- else recommendation=max>=1?"Atinge o limiar de PAAF (≥ 1 cm).":max>=0.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 0,5 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
+ else if(!recommendation&&cat==="TR5")recommendation=max>=1?"Atinge o limiar de PAAF (≥ 1 cm).":max>=0.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 0,5 cm); não atinge limiar de PAAF.":"Não atinge os limiares de PAAF ou seguimento.";
  return{total,cat,recommendation,max,comp,echo,shape,margin,foci,dims};
 }
 const safe=t=>{const e=document.createElement("span");e.textContent=t;return e.innerHTML;};
