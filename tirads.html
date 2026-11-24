@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<meta name="description" content="Calculadora auxiliar ACR TI-RADS para ultrassonografia da tireoide.">
+<title>Calculadora ACR TI-RADS — Tireoide</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--p:#0f766e;--bg:#f1f5f9;--bd:#cbd5e1;--ink:#1e293b}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;padding:14px;background:var(--bg);color:var(--ink)}
+main{max-width:820px;margin:auto}
+h1{text-align:center;color:#134e4a;font-size:23px}
+.sub{text-align:center;color:#64748b;font-size:13px;margin-top:-7px}
+.card{background:white;padding:17px;border-radius:13px;margin:12px 0;box-shadow:0 2px 6px #0001}
+h2{font-size:17px;color:#115e59;border-left:4px solid var(--p);padding-left:9px}
+label{display:block;font-size:13px;font-weight:bold;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:#f8fafc;font-size:15px;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+button{padding:12px;border:0;border-radius:9px;background:var(--p);color:white;font-weight:bold;cursor:pointer;margin:8px 6px 0 0}
+button.secondary{background:#475569}button.red{background:#b91c1c}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:flex;align-items:center;gap:6px;margin:0;padding:8px 10px;border:1px solid var(--bd);border-radius:18px;background:#f8fafc;font-weight:normal}
+.chips input{width:auto}
+.notice{background:#ecfeff;border-left:4px solid #0891b2;padding:10px 12px;border-radius:7px;font-size:13px;line-height:1.45}
+.score{font-size:17px;font-weight:bold;color:#134e4a}
+.small{font-size:12px;color:#64748b;line-height:1.45}
+.nodule{padding:12px;background:#f0fdfa;border-radius:9px;margin:8px 0}
+.result{font-size:14px;line-height:1.55}
+.result strong{color:#134e4a}
+textarea{min-height:250px;line-height:1.5}
+.toplink{display:inline-block;color:#0f766e;text-decoration:none;font-weight:bold;margin-bottom:4px}
+@media(max-width:560px){.grid,.grid3{grid-template-columns:1fr 1fr}.grid3>div:last-child{grid-column:1/-1}}
+@media print{.no-print{display:none!important}body{background:#fff;padding:0}.card{box-shadow:none;border:1px solid #ddd}textarea{border:0;padding:0}}
+</style>
+</head>
+<body>
+<main>
+<a class="toplink no-print" href="./">← Início das calculadoras</a>
+<h1>🩺 Calculadora ACR TI-RADS</h1>
+<p class="sub">ULTRASSONOGRAFIA DA TIREOIDE E REGIÕES CERVICAIS</p>
+<section class="card no-print">
+<h2>1. Identificação</h2>
+<div class="grid">
+<div><label for="paciente">Paciente</label><input id="paciente" autocomplete="name"></div>
+<div><label for="data">Data do exame</label><input id="data" type="date"></div>
+<div><label for="indicacao">Indicação clínica</label><input id="indicacao"></div>
+<div><label for="doppler">Técnica</label><select id="doppler"><option>Sem Doppler</option><option>Com Doppler colorido</option></select></div>
+</div>
+<p class="small">O Doppler é registrado na técnica, mas não altera a pontuação ACR TI-RADS.</p>
+</section>
+<section class="card no-print">
+<h2>2. Características do nódulo</h2>
+<div class="grid">
+<div><label for="lado">Lobo / localização</label><select id="lado"><option>Lobo direito</option><option>Lobo esquerdo</option><option>Istmo</option></select></div>
+<div><label for="terco">Terço</label><select id="terco"><option>Superior</option><option>Médio</option><option>Inferior</option><option>Não especificado</option></select></div>
+</div>
+<label>Dimensões (cm)</label>
+<div class="grid3">
+<div><label for="d1">Eixo 1</label><input id="d1" type="number" min="0" step="0.1" inputmode="decimal"></div>
+<div><label for="d2">Eixo 2</label><input id="d2" type="number" min="0" step="0.1" inputmode="decimal"></div>
+<div><label for="d3">Eixo 3</label><input id="d3" type="number" min="0" step="0.1" inputmode="decimal"></div>
+</div>
+<label for="composicao">Composição</label>
+<select id="composicao"><option value="Cística ou quase completamente cística|0">Cística ou quase completamente cística — 0 pontos</option><option value="Espongiforme|0">Espongiforme — 0 pontos</option><option value="Mista cística e sólida|1">Mista cística e sólida — 1 ponto</option><option value="Sólida ou quase completamente sólida|2">Sólida ou quase completamente sólida — 2 pontos</option></select>
+<label for="ecogenicidade">Ecogenicidade</label>
+<select id="ecogenicidade"><option value="Anecoica|0">Anecoica — 0 pontos</option><option value="Hiperecoica ou isoecoica|1">Hiperecoica ou isoecoica — 1 ponto</option><option value="Hipoecoica|2">Hipoecoica — 2 pontos</option><option value="Marcadamente hipoecoica|3">Marcadamente hipoecoica — 3 pontos</option></select>
+<label for="forma">Forma (no plano transversal)</label>
+<select id="forma"><option value="Mais largo do que alto|0">Mais largo do que alto — 0 pontos</option><option value="Mais alto do que largo|3">Mais alto do que largo — 3 pontos</option></select>
+<label for="margem">Margem</label>
+<select id="margem"><option value="Bem definida / lisa|0">Bem definida / lisa — 0 pontos</option><option value="Mal definida|0">Mal definida — 0 pontos</option><option value="Irregular|2">Irregular — 2 pontos</option><option value="Lobulada|2">Lobulada — 2 pontos</option><option value="Extensão extratireoidiana (invasão)|3">Extensão extratireoidiana (invasão) — 3 pontos</option></select>
+<label>Focos ecogênicos / calcificações (selecione todos os aplicáveis)</label>
+<div class="chips">
+<label><input type="checkbox" name="foco" value="Artefato em cauda de cometa|0"> Cauda de cometa — 0</label>
+<label><input type="checkbox" name="foco" value="Macrocalcificações|1"> Macrocalcificações — 1</label>
+<label><input type="checkbox" name="foco" value="Calcificações periféricas (em anel)|2"> Calcificações periféricas — 2</label>
+<label><input type="checkbox" name="foco" value="Focos ecogênicos puntiformes|3"> Focos puntiformes — 3</label>
+<label><input type="checkbox" name="foco" value="Sem focos ecogênicos|0"> Nenhum — 0</label>
+</div>
+<p class="small">Os pontos dos focos ecogênicos são somados quando há mais de um tipo. Cauda de cometa corresponde ao artefato grande em componente cístico.</p>
+<label for="obs">Observações do nódulo</label><textarea id="obs" style="min-height:75px"></textarea>
+<button type="button" id="adicionar">Adicionar nódulo e calcular</button>
+<button type="button" class="secondary" id="limpar">Limpar formulário do nódulo</button>
+<div id="previa" class="result" aria-live="polite"></div>
+<div id="lista"></div>
+</section>
+<section class="card no-print">
+<h2>3. Observações da tireoide e cadeias cervicais</h2>
+<label for="obsGeral">Outros achados</label>
+<textarea id="obsGeral" style="min-height:90px" placeholder="Descreva dimensões da glândula, parênquima, linfonodos ou outros achados."></textarea>
+</section>
+<section class="card no-print">
+<h2>4. Laudo</h2>
+<button type="button" id="gerar">Gerar laudo</button><button type="button" class="secondary" id="imprimir">Imprimir</button><button type="button" id="copiar">Copiar laudo</button>
+</section>
+<section class="card"><h2>LAUDO DE ULTRASSONOGRAFIA DA TIREOIDE</h2><textarea id="laudo" placeholder="O laudo gerado aparecerá aqui e poderá ser editado."></textarea></section>
+<p class="small" style="text-align:center">Ferramenta auxiliar baseada no ACR TI-RADS. Confira os descritores, a categoria e a recomendação com o protocolo vigente e o contexto clínico antes de assinar.</p>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const nodules=[];
+const split=v=>{const i=v.lastIndexOf("|");return{label:v.slice(0,i),points:Number(v.slice(i+1))};};
+const value=id=>$(id).value;
+const checkedFoci=()=>[...document.querySelectorAll('input[name="foco"]:checked')].map(x=>split(x.value));
+function scoreCurrent(){
+ const comp=split(value("composicao")),echo=split(value("ecogenicidade")),shape=split(value("forma")),margin=split(value("margem"));
+ let foci=checkedFoci();if(foci.some(x=>x.label==="Sem focos ecogênicos"))foci=[];
+ const total=comp.points+echo.points+shape.points+margin.points+foci.reduce((n,x)=>n+x.points,0);
+ const cat=total<=1?"TR1":total===2?"TR2":total===3?"TR3":total<=6?"TR4":"TR5";
+ const dims=[$("d1").value,$("d2").value,$("d3").value].map(Number).filter(x=>x>0);
+ const max=dims.length?Math.max(...dims):0;
+ let recommendation="";
+ if(cat==="TR1"||cat==="TR2")recommendation="Não há indicação de PAAF ou seguimento de rotina pelo ACR TI-RADS.";
+ else if(cat==="TR3")recommendation=max>=2.5?"Atinge o limiar de PAAF (≥ 2,5 cm).":max>=1.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 1,5 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
+ else if(cat==="TR4")recommendation=max>=1.5?"Atinge o limiar de PAAF (≥ 1,5 cm).":max>=1?"Atinge o limiar de seguimento ultrassonográfico (≥ 1 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
+ else recommendation=max>=1?"Atinge o limiar de PAAF (≥ 1 cm).":max>=0.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 0,5 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
+ return{total,cat,recommendation,max,comp,echo,shape,margin,foci,dims};
+}
+const safe=t=>{const e=document.createElement("span");e.textContent=t;return e.innerHTML;};
+function showPreview(){const r=scoreCurrent();$("previa").innerHTML='<p class="score">Pontuação: '+r.total+' pontos — '+r.cat+'</p><p>'+safe(r.recommendation)+' <span class="small">(maior diâmetro informado: '+(r.max?r.max.toLocaleString("pt-BR")+' cm':"não informado")+')</span></p>';}
+function render(){ $("lista").innerHTML=nodules.map((n,i)=>'<div class="nodule"><strong>Nódulo '+(i+1)+' — '+safe(n.cat)+' ('+n.total+' pontos)</strong><p>'+safe(n.location)+' | '+safe(n.dimensions)+' cm</p><p>'+safe(n.recommendation)+'</p><button type="button" class="red" data-remove="'+i+'">Remover nódulo</button></div>').join("");}
+function clearNodule(){
+ ["d1","d2","d3","obs"].forEach(id=>$(id).value="");
+ ["composicao","ecogenicidade","forma","margem"].forEach(id=>$(id).selectedIndex=0);
+ document.querySelectorAll('input[name="foco"]').forEach(x=>x.checked=false);
+ showPreview();
+}
+document.querySelectorAll('#composicao,#ecogenicidade,#forma,#margem,#d1,#d2,#d3,input[name="foco"]').forEach(el=>el.addEventListener("change",e=>{
+ if(e.target.name==="foco"&&e.target.checked)document.querySelectorAll('input[name="foco"]').forEach(other=>{if(other!==e.target&&(e.target.value.startsWith("Sem focos")||other.value.startsWith("Sem focos")))other.checked=false;});
+ showPreview();
+}));
+$("adicionar").addEventListener("click",()=>{
+ const r=scoreCurrent();
+ const dims=[$("d1").value,$("d2").value,$("d3").value].filter(Boolean);
+ if(!dims.length){alert("Informe pelo menos uma dimensão do nódulo.");return;}
+ const location=value("lado")+", terço "+value("terco");
+ const focus=r.foci.length?r.foci.map(x=>x.label).join(", "):"Nenhum";
+ const desc="Composição: "+r.comp.label+". Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".";
+ nodules.push({total:r.total,cat:r.cat,recommendation:r.recommendation,location,dimensions:dims.join(" × "),description:desc,obs:value("obs")});
+ render();clearNodule();
+});
+$("limpar").addEventListener("click",clearNodule);
+$("lista").addEventListener("click",e=>{const b=e.target.closest("[data-remove]");if(!b)return;nodules.splice(Number(b.dataset.remove),1);render();});
+$("gerar").addEventListener("click",()=>{
+ let t="ULTRASSONOGRAFIA DA TIREOIDE E REGIÕES CERVICAIS\n\nPaciente: "+value("paciente")+"\nData: "+value("data")+"\nIndicação clínica: "+value("indicacao")+"\nTécnica: "+value("doppler")+"\n\nACHADOS:\n";
+ t+=nodules.length?nodules.map((n,i)=>"Nódulo "+(i+1)+" — "+n.location+". Dimensões: "+n.dimensions+" cm. "+n.description+"\nACR TI-RADS: "+n.cat+" ("+n.total+" pontos). "+n.recommendation+"\n"+(n.obs?"Observações: "+n.obs+"\n":"")).join("\n"):"Não foram cadastrados nódulos focais.\n";
+ if(value("obsGeral"))t+="\nOUTROS ACHADOS:\n"+value("obsGeral")+"\n";
+ t+="\nClassificação e recomendações auxiliares baseadas no ACR TI-RADS; correlacionar com contexto clínico e protocolo vigente.";
+ $("laudo").value=t;
+});
+$("imprimir").addEventListener("click",()=>window.print());
+$("copiar").addEventListener("click",async()=>{try{await navigator.clipboard.writeText($("laudo").value);alert("Laudo copiado.");}catch(e){$("laudo").select();document.execCommand("copy");alert("Laudo copiado.");}});
+showPreview();
+if("serviceWorker"in navigator&&location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
+})();
+</script>
+</body>
+</html>
