@@ -35,7 +35,7 @@ button.secondary{background:#475569}button.red{background:#b91c1c}
 textarea{min-height:250px;line-height:1.5}
 .toplink{display:inline-block;color:#0f766e;text-decoration:none;font-weight:bold;margin-bottom:4px}
 @media(max-width:560px){.grid,.grid3{grid-template-columns:1fr 1fr}.grid3>div:last-child{grid-column:1/-1}}
-@media print{.no-print{display:none!important}body{background:#fff;padding:0}.card{box-shadow:none;border:1px solid #ddd}textarea{border:0;padding:0}}
+@media print{.no-print{display:none!important}body{background:#fff;padding:0;font-size:11pt}main{max-width:none}.card{box-shadow:none;border:0;border-bottom:1px solid #ddd;padding:8px;margin:0}textarea{border:0;padding:0;min-height:120px}h1{font-size:18pt}}
 </style>
 </head>
 <body>
@@ -52,6 +52,22 @@ textarea{min-height:250px;line-height:1.5}
 <div><label for="doppler">Técnica</label><select id="doppler"><option>Sem Doppler</option><option>Com Doppler colorido</option></select></div>
 </div>
 <p class="small">O Doppler é registrado na técnica, mas não altera a pontuação ACR TI-RADS.</p>
+<div class="nodule">
+<strong>Dimensões da glândula tireoide (cm)</strong>
+<div class="grid3">
+<div><label for="dld">Lobo direito — longitudinal</label><input id="dld" type="number" min="0" step="0.1"></div>
+<div><label for="dad">Lobo direito — AP</label><input id="dad" type="number" min="0" step="0.1"></div>
+<div><label for="dtd">Lobo direito — transversal</label><input id="dtd" type="number" min="0" step="0.1"></div>
+<div><label for="dle">Lobo esquerdo — longitudinal</label><input id="dle" type="number" min="0" step="0.1"></div>
+<div><label for="dae">Lobo esquerdo — AP</label><input id="dae" type="number" min="0" step="0.1"></div>
+<div><label for="dte">Lobo esquerdo — transversal</label><input id="dte" type="number" min="0" step="0.1"></div>
+</div>
+<div class="grid">
+<div><label for="istmo">Espessura do istmo (cm)</label><input id="istmo" type="number" min="0" step="0.1"></div>
+<div><label>Volume estimado</label><div id="volume" class="score" aria-live="polite">Não calculado</div></div>
+</div>
+<p class="small">Estimativa volumétrica dos lobos pelo método elipsoide (comprimento × AP × transversal × 0,52). O istmo não é incluído no volume calculado.</p>
+</div>
 </section>
 <section class="card no-print">
 <h2>2. Características do nódulo</h2>
@@ -110,14 +126,17 @@ const checkedFoci=()=>[...document.querySelectorAll('input[name="foco"]:checked'
 function scoreCurrent(){
  const comp=split(value("composicao")),echo=split(value("ecogenicidade")),shape=split(value("forma")),margin=split(value("margem"));
  let foci=checkedFoci();if(foci.some(x=>x.label==="Sem focos ecogênicos"))foci=[];
- const total=comp.label==="Espongiforme"?0:comp.points+echo.points+shape.points+margin.points+foci.reduce((n,x)=>n+x.points,0);
- const cat=total===0?"TR1":total===2?"TR2":total===3?"TR3":total>=4&&total<=6?"TR4":total>=7?"TR5":"REVISAR";
+ const isPureCystic=comp.label==="Cística ou quase completamente cística";
+ const isSpongiform=comp.label==="Espongiforme";
+ const invalidCombination=!isPureCystic&&!isSpongiform&&echo.label==="Anecoica";
+ const total=(isPureCystic||isSpongiform)?0:comp.points+echo.points+shape.points+margin.points+foci.reduce((n,x)=>n+x.points,0);
+ const cat=invalidCombination?"REVISAR":total===0?"TR1":total===1?"REVISAR":total===2?"TR2":total===3?"TR3":total>=4&&total<=6?"TR4":total>=7?"TR5":"REVISAR";
  const dims=[$("d1").value,$("d2").value,$("d3").value].map(Number).filter(x=>x>0);
  const max=dims.length?Math.max(...dims):0;
- let recommendation="";
- if(cat==="TR1"||cat==="TR2")recommendation="Não há indicação de PAAF ou seguimento de rotina pelo ACR TI-RADS.";
- else if(cat==="TR3")recommendation=max>=2.5?"Atinge o limiar de PAAF (≥ 2,5 cm).":max>=1.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 1,5 cm); não atinge limiar de PAAF.":"Não atinge os limiares de PAAF ou seguimento.";
- else if(cat==="TR4")recommendation=max>=1.5?"Atinge o limiar de PAAF (≥ 1,5 cm).":max>=1?"Atinge o limiar de seguimento ultrassonográfico (≥ 1 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
+ let recommendation=invalidCombination?"Combinação de descritores incompatível: revise a ecogenicidade do componente sólido.":total===1?"Pontuação de 1 ponto não corresponde a uma categoria ACR TI-RADS válida; revise os descritores selecionados.":"";
+ if(!recommendation&&(cat==="TR1"||cat==="TR2"))recommendation="Não há indicação de PAAF ou seguimento de rotina pelo ACR TI-RADS.";
+ else if(!recommendation&&cat==="TR3")recommendation=max>=2.5?"Atinge o limiar de PAAF (≥ 2,5 cm).":max>=1.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 1,5 cm); não atinge limiar de PAAF.":"Não atinge os limiares de PAAF ou seguimento.";
+ else if(!recommendation&&cat==="TR4")recommendation=max>=1.5?"Atinge o limiar de PAAF (≥ 1,5 cm).":max>=1?"Atinge o limiar de seguimento ultrassonográfico (≥ 1 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
  else recommendation=max>=1?"Atinge o limiar de PAAF (≥ 1 cm).":max>=0.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 0,5 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
  return{total,cat,recommendation,max,comp,echo,shape,margin,foci,dims};
 }
@@ -137,10 +156,10 @@ document.querySelectorAll('#composicao,#ecogenicidade,#forma,#margem,#d1,#d2,#d3
 $("adicionar").addEventListener("click",()=>{
  const r=scoreCurrent();
  const dims=[$("d1").value,$("d2").value,$("d3").value].filter(Boolean);
- if(dims.length!==3||dims.some(x=>Number(x)<=0)){alert("Informe as três dimensões do nódulo em centímetros, com valores maiores que zero.");return;}
+ if(dims.length!==3||dims.some(x=>Number(x)<=0)){alert("Informe as três dimensões do nódulo em centímetros, com valores maiores que zero.");return;}\n if(r.cat==="REVISAR"){alert(r.recommendation);return;}
  const location=value("lado")+", terço "+value("terco");
  const focus=r.foci.length?r.foci.map(x=>x.label).join(", "):"Nenhum";
- const desc="Composição: "+r.comp.label+". "+(r.comp.label==="Espongiforme"?"Por ser espongiforme, os demais descritores não foram pontuados. ":"Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".");
+ const desc="Composição: "+r.comp.label+". "+((r.comp.label==="Espongiforme"||r.comp.label==="Cística ou quase completamente cística")?"Pela composição cística/espongiforme, os demais descritores não foram pontuados. ":"Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".");
  nodules.push({total:r.total,cat:r.cat,recommendation:r.recommendation,location,dimensions:dims.join(" × "),description:desc,obs:value("obs")});
  render();clearNodule();
 });
