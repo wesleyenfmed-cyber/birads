@@ -160,7 +160,7 @@ $("adicionar").addEventListener("click",()=>{
  if(r.cat==="REVISAR"){alert(r.recommendation);return;}
  const location=value("lado")+", terço "+value("terco");
  const focus=r.foci.length?r.foci.map(x=>x.label).join(", "):"Nenhum";
- const desc="Composição: "+r.comp.label+". "+((r.comp.label==="Espongiforme"||r.comp.label==="Cística ou quase completamente cística")?"Pela composição cística/espongiforme, os demais descritores não foram pontuados. ":"Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".");
+ const desc="Composição: "+r.comp.label+". "+((r.comp.label==="Espongiforme"||r.comp.label==="Cística ou quase completamente cística")?"Pela composição cística/espongiforme, os demais descritores não foram pontuados. ":"Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".")+(r.margin.label==="Extensão extratireoidiana (invasão)"?" ATENÇÃO: extensão extratireoidiana definida — considerar malignidade até prova em contrário.":"");
  nodules.push({total:r.total,cat:r.cat,recommendation:r.recommendation,location,dimensions:dims.join(" × "),description:desc,obs:value("obs")});
  render();clearNodule();
 });
