@@ -168,13 +168,9 @@ ULTRASSONOGRAFIA MAMÁRIA E AXILAR
 <option>Espiculadas</option>
 </select>
 
-<label>Ecogenicidade</label>
+<label>Padrão ecográfico</label>
 <select id="ecogenicidade">
-<option>Anecoica</option>
-<option>Hiperecoica</option>
-<option>Isoecoica</option>
-<option>Hipoecoica</option>
-<option>Heterogênea</option>
+<option>Anecoica</option><option>Hiperecoica</option><option>Isoecoica</option><option>Hipoecoica</option><option>Heterogênea</option><option>Mista sólida e cística</option>
 </select>
 
 <label>Características acústicas posteriores</label>
@@ -186,7 +182,9 @@ ULTRASSONOGRAFIA MAMÁRIA E AXILAR
 </select>
 
 <label>Calcificações</label>
-<select id="calcificacoes"><option>Não identificadas</option><option>Em uma massa</option><option>Fora de uma massa</option><option>Intraductais</option></select>
+<select id="calcificacoes"><option>Não identificadas</option><option>Macrocalcificações</option><option>Microcalcificações</option><option>Em uma massa ou NML</option><option>Fora de uma massa ou NML</option><option>Intraductais</option></select>
+<label>Pseudocápsula ecogênica</label>
+<select id="pseudocapsula"><option>Não identificada</option><option>Presente</option></select>
 <label>Vascularidade</label>
 <select id="vascularidade"><option>Não avaliada</option><option>Ausente</option><option>Vascularidade interna</option><option>Vasos na periferia</option></select>
 <label>Halo ecogênico (echogenic rind)</label>
@@ -393,7 +391,7 @@ if(t==="Nódulo (massa)"){
 let ad=[...document.querySelectorAll('input[name="adicional"]:checked')]
 .map(x=>x.value).join(", ");
 descricao+=`Nódulo ${valor("forma").toLowerCase()}, orientação ${valor("orientacao").toLowerCase()}, margens ${valor("margem").toLowerCase()}, ecogenicidade ${valor("ecogenicidade").toLowerCase()}, ${valor("posterior").toLowerCase()}. `+
-`Calcificações: ${valor("calcificacoes")}. Vascularidade: ${valor("vascularidade")}. Halo ecogênico: ${valor("halo")}. Elastografia: ${valor("elastografia")}. `;
+`Calcificações: ${valor("calcificacoes")}. Pseudocápsula ecogênica: ${valor("pseudocapsula")}. Vascularidade: ${valor("vascularidade")}. Halo ecogênico: ${valor("halo")}. Elastografia: ${valor("elastografia")}. `;
 if(ad)descricao+=`Características adicionais: ${ad}. `;
 }
 if(t==="Caso especial benigno"){
@@ -430,6 +428,7 @@ function analisarDescritores(){
    if(valor("orientacao")==="Não paralela") sinais.push("orientação não paralela");
    if(["Indistintas","Angulares","Microlobuladas","Espiculadas"].includes(valor("margem"))) sinais.push("margem não circunscrita: "+valor("margem"));
    if(valor("halo")==="Presente") sinais.push("halo ecogênico presente");
+   if(valor("pseudocapsula")==="Presente") sinais.push("pseudocápsula ecogênica presente");
    if(["Vascularidade interna","Vasos na periferia"].includes(valor("vascularidade"))) sinais.push("vascularidade: "+valor("vascularidade"));
    if(valor("calcificacoes")!=="Não identificadas") sinais.push("calcificações: "+valor("calcificacoes"));
    if(valor("elastografia")==="Rígida") sinais.push("elastografia rígida");
