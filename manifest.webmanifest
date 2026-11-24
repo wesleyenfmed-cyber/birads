@@ -1,15 +1,13 @@
 {
   "id": "./",
-  "name": "Calculadora BI-RADS – US Mamária",
-  "short_name": "BI-RADS US",
-  "description": "Ferramenta auxiliar para laudos de ultrassonografia mamária e axilar.",
+  "name": "Calculadoras de Ultrassonografia",
+  "short_name": "US Calculadoras",
+  "description": "Calculadoras BI-RADS e ACR TI-RADS para ultrassonografia.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f1f5f9",
   "theme_color": "#1d4ed8",
-  "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
-  ]
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }
