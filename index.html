@@ -185,12 +185,23 @@ ULTRASSONOGRAFIA MAMÁRIA E AXILAR
 <option>Padrão combinado</option>
 </select>
 
+<label>Calcificações</label>
+<select id="calcificacoes"><option>Não identificadas</option><option>Em uma massa</option><option>Fora de uma massa</option><option>Intraductais</option></select>
+<label>Vascularidade</label>
+<select id="vascularidade"><option>Não avaliada</option><option>Ausente</option><option>Vascularidade interna</option><option>Vasos na periferia</option></select>
+<label>Halo ecogênico (echogenic rind)</label>
+<select id="halo"><option>Não identificado</option><option>Presente</option></select>
+<label>Elastografia (quando realizada)</label>
+<select id="elastografia"><option>Não realizada</option><option>Macia</option><option>Intermediária</option><option>Rígida</option></select>
 <label>Características adicionais</label>
 <div class="chips">
 <label><input type="checkbox" name="adicional" value="Calcificações"> Calcificações</label>
 <label><input type="checkbox" name="adicional" value="Distorção arquitetural"> Distorção arquitetural</label>
 <label><input type="checkbox" name="adicional" value="Alteração ductal"> Alteração ductal</label>
 <label><input type="checkbox" name="adicional" value="Alteração da pele"> Alteração da pele</label>
+<label><input type="checkbox" name="adicional" value="Espessamento cutâneo"> Espessamento cutâneo</label>
+<label><input type="checkbox" name="adicional" value="Retração cutânea"> Retração cutânea</label>
+<label><input type="checkbox" name="adicional" value="Edema"> Edema</label>
 </div>
 </div>
 
@@ -221,6 +232,10 @@ ULTRASSONOGRAFIA MAMÁRIA E AXILAR
 <option>Alteração arquitetural</option>
 <option>Outro</option>
 </select>
+<label>Ecogenicidade da NML</label>
+<select id="ecoNML"><option>Não especificada</option><option>Hipoecoica</option><option>Isoecoica</option><option>Hiperecoica</option><option>Heterogênea</option></select>
+<label>Achados associados à NML</label>
+<select id="associadosNML"><option>Nenhum identificado</option><option>Calcificações</option><option>Alteração ductal</option><option>Distorção arquitetural</option><option>Vascularidade</option><option>Halo ecogênico</option></select>
 </div>
 
 <label>Observações da lesão</label>
@@ -260,8 +275,17 @@ ULTRASSONOGRAFIA MAMÁRIA E AXILAR
 <option>Não avaliados</option>
 </select>
 
+<label>Morfologia dos linfonodos (se alterados)</label>
+<select id="morfologiaAxilar"><option>Não aplicável / não suspeita</option><option>Espessamento cortical</option><option>Hilo gorduroso reduzido ou ausente</option><option>Formato arredondado</option><option>Vascularidade não hilar</option><option>Outras alterações suspeitas</option></select>
 <label>Observações axilares</label>
 <textarea id="obsAxila" style="min-height:70px"></textarea>
+</div>
+
+<div class="card no-print">
+<h2>Análise auxiliar de achados</h2>
+<p><small>Destaca descritores que merecem revisão. Não atribui categoria BI-RADS automaticamente.</small></p>
+<div id="alertaDescritores" class="item">Preencha os descritores e clique em Analisar achados.</div>
+<button type="button" class="secondary" onclick="analisarDescritores()">ANALISAR ACHADOS</button>
 </div>
 
 <div class="card no-print">
@@ -368,14 +392,15 @@ let descricao=
 if(t==="Nódulo (massa)"){
 let ad=[...document.querySelectorAll('input[name="adicional"]:checked')]
 .map(x=>x.value).join(", ");
-descricao+=`Nódulo ${valor("forma").toLowerCase()}, orientação ${valor("orientacao").toLowerCase()}, margens ${valor("margem").toLowerCase()}, ecogenicidade ${valor("ecogenicidade").toLowerCase()}, ${valor("posterior").toLowerCase()}. `;
+descricao+=`Nódulo ${valor("forma").toLowerCase()}, orientação ${valor("orientacao").toLowerCase()}, margens ${valor("margem").toLowerCase()}, ecogenicidade ${valor("ecogenicidade").toLowerCase()}, ${valor("posterior").toLowerCase()}. `+
+`Calcificações: ${valor("calcificacoes")}. Vascularidade: ${valor("vascularidade")}. Halo ecogênico: ${valor("halo")}. Elastografia: ${valor("elastografia")}. `;
 if(ad)descricao+=`Características adicionais: ${ad}. `;
 }
 if(t==="Caso especial benigno"){
 descricao+=`Caso especial: ${valor("caso")}. `;
 }
 if(t==="Lesão não nodular (NML)"){
-descricao+=`Lesão não nodular, distribuição ${valor("distribuicao").toLowerCase()}, característica: ${valor("caracteristicaNML")}. `;
+descricao+=`Lesão não nodular, distribuição ${valor("distribuicao").toLowerCase()}, característica: ${valor("caracteristicaNML")}, ecogenicidade: ${valor("ecoNML")}, achados associados: ${valor("associadosNML")}. `;
 }
 if(valor("obsLesao"))descricao+=valor("obsLesao");
 
@@ -394,6 +419,31 @@ lesoes.map((x,i)=>`<div class="item">
 function remover(i){
 lesoes.splice(i,1);
 renderLesoes();
+}
+
+function analisarDescritores(){
+ const a=[];
+ if(valor("status")==="Com achados focais"){
+  if(valor("tipo")==="Nódulo (massa)"){
+   const sinais=[];
+   if(valor("forma")==="Irregular") sinais.push("forma irregular");
+   if(valor("orientacao")==="Não paralela") sinais.push("orientação não paralela");
+   if(["Indistintas","Angulares","Microlobuladas","Espiculadas"].includes(valor("margem"))) sinais.push("margem não circunscrita: "+valor("margem"));
+   if(valor("halo")==="Presente") sinais.push("halo ecogênico presente");
+   if(["Vascularidade interna","Vasos na periferia"].includes(valor("vascularidade"))) sinais.push("vascularidade: "+valor("vascularidade"));
+   if(valor("calcificacoes")!=="Não identificadas") sinais.push("calcificações: "+valor("calcificacoes"));
+   if(valor("elastografia")==="Rígida") sinais.push("elastografia rígida");
+   if(sinais.length) a.push("Nódulo: revisar "+sinais.join(", ")+".");
+   if(valor("forma")==="Lobulada") a.push("Forma lobulada: interpretar junto ao contorno e aos demais descritores; não define categoria isoladamente.");
+   if(valor("posterior")==="Sombra acústica posterior") a.push("Sombra acústica posterior: considerar no contexto morfológico.");
+  }
+  if(valor("tipo")==="Lesão não nodular (NML)"){
+   if(["Linear","Segmentar"].includes(valor("distribuicao"))) a.push("NML com distribuição "+valor("distribuicao")+": revisar padrão e achados associados.");
+   if(valor("associadosNML")!=="Nenhum identificado") a.push("NML com achado associado: "+valor("associadosNML")+".");
+  }
+ }
+ if(valor("axilaD")==="Linfonodos com alterações suspeitas"||valor("axilaE")==="Linfonodos com alterações suspeitas") a.push("Linfonodos axilares assinalados como suspeitos: revisar córtex, hilo e vascularidade.");
+ document.getElementById("alertaDescritores").textContent=a.length?"REVISÃO NECESSÁRIA — "+a.join(" ")+" A ferramenta não atribui BI-RADS automaticamente.":"Nenhum alerta programado foi acionado. Isso não exclui suspeição; revisar imagens e contexto clínico.";
 }
 
 function gerarLaudo(){
