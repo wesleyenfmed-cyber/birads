@@ -156,7 +156,8 @@ document.querySelectorAll('#composicao,#ecogenicidade,#forma,#margem,#d1,#d2,#d3
 $("adicionar").addEventListener("click",()=>{
  const r=scoreCurrent();
  const dims=[$("d1").value,$("d2").value,$("d3").value].filter(Boolean);
- if(dims.length!==3||dims.some(x=>Number(x)<=0)){alert("Informe as três dimensões do nódulo em centímetros, com valores maiores que zero.");return;}\n if(r.cat==="REVISAR"){alert(r.recommendation);return;}
+ if(dims.length!==3||dims.some(x=>Number(x)<=0)){alert("Informe as três dimensões do nódulo em centímetros, com valores maiores que zero.");return;}
+ if(r.cat==="REVISAR"){alert(r.recommendation);return;}
  const location=value("lado")+", terço "+value("terco");
  const focus=r.foci.length?r.foci.map(x=>x.label).join(", "):"Nenhum";
  const desc="Composição: "+r.comp.label+". "+((r.comp.label==="Espongiforme"||r.comp.label==="Cística ou quase completamente cística")?"Pela composição cística/espongiforme, os demais descritores não foram pontuados. ":"Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".");
@@ -166,15 +167,24 @@ $("adicionar").addEventListener("click",()=>{
 $("limpar").addEventListener("click",clearNodule);
 $("lista").addEventListener("click",e=>{const b=e.target.closest("[data-remove]");if(!b)return;nodules.splice(Number(b.dataset.remove),1);render();});
 $("gerar").addEventListener("click",()=>{
- let t="ULTRASSONOGRAFIA DA TIREOIDE E REGIÕES CERVICAIS\n\nPaciente: "+value("paciente")+"\nData: "+value("data")+"\nIndicação clínica: "+value("indicacao")+"\nTécnica: "+value("doppler")+"\n\nACHADOS:\n";
- t+=nodules.length?nodules.map((n,i)=>"Nódulo "+(i+1)+" — "+n.location+". Dimensões: "+n.dimensions+" cm. "+n.description+"\nACR TI-RADS: "+n.cat+" ("+n.total+" pontos). "+n.recommendation+"\n"+(n.obs?"Observações: "+n.obs+"\n":"")).join("\n"):"Nenhum nódulo foi cadastrado nesta ferramenta.\n";
+ const vol=(l,ap,tr)=>Number(value(l))*Number(value(ap))*Number(value(tr))*0.52;
+ const vd=vol("dld","dad","dtd"),ve=vol("dle","dae","dte");
+ let t="ULTRASSONOGRAFIA DA TIREOIDE E REGIÕES CERVICAIS\n\nPaciente: "+value("paciente")+"\nData: "+value("data")+"\nIndicação clínica: "+value("indicacao")+"\nTécnica: "+value("doppler")+"\n\nDIMENSÕES GLANDULARES:\n";
+ if(value("dld")||value("dad")||value("dtd"))t+="Lobo direito: "+[value("dld"),value("dad"),value("dtd")].join(" × ")+" cm; volume estimado: "+vd.toFixed(2)+" cm³.\n";
+ if(value("dle")||value("dae")||value("dte"))t+="Lobo esquerdo: "+[value("dle"),value("dae"),value("dte")].join(" × ")+" cm; volume estimado: "+ve.toFixed(2)+" cm³.\n";
+ if(value("istmo"))t+="Espessura do istmo: "+value("istmo")+" cm.\n";
+ if(vd||ve)t+="Volume total estimado dos lobos: "+(vd+ve).toFixed(2)+" cm³ (sem incluir o istmo).\n";
+ t+="\nACHADOS NODULARES:\nNúmero de nódulos cadastrados: "+nodules.length+".\n\n";
+ t+=nodules.length?nodules.map((n,i)=>"NÓDULO "+(i+1)+" — "+n.location+".\nDimensões: "+n.dimensions+" cm.\n"+n.description+"\nACR TI-RADS: "+n.cat+" ("+n.total+" pontos).\nConduta por tamanho: "+n.recommendation+"\n"+(n.obs?"Observações: "+n.obs+"\n":"")).join("\n"):"Nenhum nódulo foi cadastrado nesta ferramenta.\n";
  if(value("obsGeral"))t+="\nOUTROS ACHADOS:\n"+value("obsGeral")+"\n";
- t+="\nClassificação e recomendações auxiliares baseadas no ACR TI-RADS; correlacionar com contexto clínico e protocolo vigente.";
+ t+="\nClassificação e recomendações auxiliares baseadas no ACR TI-RADS. Correlacionar com contexto clínico e protocolo vigente.";
  $("laudo").value=t;
 });
 $("imprimir").addEventListener("click",()=>window.print());
 $("copiar").addEventListener("click",async()=>{try{await navigator.clipboard.writeText($("laudo").value);alert("Laudo copiado.");}catch(e){$("laudo").select();document.execCommand("copy");alert("Laudo copiado.");}});
-showPreview();
+function updateVolume(){const v=(l,a,t)=>Number(value(l))*Number(value(a))*Number(value(t))*0.52;const ids=["dld","dad","dtd","dle","dae","dte"];const any=ids.some(id=>value(id));$("volume").textContent=any?(v("dld","dad","dtd")+v("dle","dae","dte")).toFixed(2).replace(".",",")+" cm³":"Não calculado";}
+ ["dld","dad","dtd","dle","dae","dte"].forEach(id=>$(id).addEventListener("input",updateVolume));
+ showPreview();updateVolume();
 if("serviceWorker"in navigator&&location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
 })();
 </script>
