@@ -66,13 +66,13 @@ textarea{min-height:250px;line-height:1.5}
 <div><label for="d3">Eixo 3</label><input id="d3" type="number" min="0" step="0.1" inputmode="decimal"></div>
 </div>
 <label for="composicao">Composição</label>
-<select id="composicao"><option value="Cística ou quase completamente cística|0">Cística ou quase completamente cística — 0 pontos</option><option value="Espongiforme|0">Espongiforme — 0 pontos</option><option value="Mista cística e sólida|1">Mista cística e sólida — 1 ponto</option><option value="Sólida ou quase completamente sólida|2">Sólida ou quase completamente sólida — 2 pontos</option></select>
+<select id="composicao"><option value="Cística ou quase completamente cística|0">Cística ou quase completamente cística — 0 pontos</option><option value="Espongiforme|0">Espongiforme — 0 pontos</option><option value="Mista cística e sólida|1">Mista cística e sólida — 1 ponto</option><option value="Sólida ou quase completamente sólida|2">Sólida ou quase completamente sólida — 2 pontos</option><option value="Não foi possível determinar|2">Não foi possível determinar — 2 pontos</option></select>
 <label for="ecogenicidade">Ecogenicidade</label>
-<select id="ecogenicidade"><option value="Anecoica|0">Anecoica — 0 pontos</option><option value="Hiperecoica ou isoecoica|1">Hiperecoica ou isoecoica — 1 ponto</option><option value="Hipoecoica|2">Hipoecoica — 2 pontos</option><option value="Marcadamente hipoecoica|3">Marcadamente hipoecoica — 3 pontos</option></select>
+<select id="ecogenicidade"><option value="Anecoica|0">Anecoica — 0 pontos</option><option value="Hiperecoica ou isoecoica|1">Hiperecoica ou isoecoica — 1 ponto</option><option value="Hipoecoica|2">Hipoecoica — 2 pontos</option><option value="Marcadamente hipoecoica|3">Marcadamente hipoecoica — 3 pontos</option><option value="Não foi possível determinar|1">Não foi possível determinar — 1 ponto</option></select>
 <label for="forma">Forma (no plano transversal)</label>
 <select id="forma"><option value="Mais largo do que alto|0">Mais largo do que alto — 0 pontos</option><option value="Mais alto do que largo|3">Mais alto do que largo — 3 pontos</option></select>
 <label for="margem">Margem</label>
-<select id="margem"><option value="Bem definida / lisa|0">Bem definida / lisa — 0 pontos</option><option value="Mal definida|0">Mal definida — 0 pontos</option><option value="Irregular|2">Irregular — 2 pontos</option><option value="Lobulada|2">Lobulada — 2 pontos</option><option value="Extensão extratireoidiana (invasão)|3">Extensão extratireoidiana (invasão) — 3 pontos</option></select>
+<select id="margem"><option value="Bem definida / lisa|0">Bem definida / lisa — 0 pontos</option><option value="Mal definida|0">Mal definida — 0 pontos</option><option value="Irregular|2">Irregular — 2 pontos</option><option value="Lobulada|2">Lobulada — 2 pontos</option><option value="Extensão extratireoidiana (invasão)|3">Extensão extratireoidiana (invasão) — 3 pontos</option><option value="Não foi possível determinar|0">Não foi possível determinar — 0 pontos</option></select>
 <label>Focos ecogênicos / calcificações (selecione todos os aplicáveis)</label>
 <div class="chips">
 <label><input type="checkbox" name="foco" value="Artefato em cauda de cometa|0"> Cauda de cometa — 0</label>
@@ -81,7 +81,7 @@ textarea{min-height:250px;line-height:1.5}
 <label><input type="checkbox" name="foco" value="Focos ecogênicos puntiformes|3"> Focos puntiformes — 3</label>
 <label><input type="checkbox" name="foco" value="Sem focos ecogênicos|0"> Nenhum — 0</label>
 </div>
-<p class="small">Os pontos dos focos ecogênicos são somados quando há mais de um tipo. Cauda de cometa corresponde ao artefato grande em componente cístico.</p>
+<p class="small">Selecione todos os focos aplicáveis; os pontos são somados. “Nenhum” é exclusivo. Na composição espongiforme, o ACR orienta não pontuar os demais descritores. Cauda de cometa grande (> 1 mm) em componente cístico recebe 0 ponto.</p>
 <label for="obs">Observações do nódulo</label><textarea id="obs" style="min-height:75px"></textarea>
 <button type="button" id="adicionar">Adicionar nódulo e calcular</button>
 <button type="button" class="secondary" id="limpar">Limpar formulário do nódulo</button>
@@ -91,7 +91,7 @@ textarea{min-height:250px;line-height:1.5}
 <section class="card no-print">
 <h2>3. Observações da tireoide e cadeias cervicais</h2>
 <label for="obsGeral">Outros achados</label>
-<textarea id="obsGeral" style="min-height:90px" placeholder="Descreva dimensões da glândula, parênquima, linfonodos ou outros achados."></textarea>
+<textarea id="obsGeral" style="min-height:90px" placeholder="Descreva dimensões dos lobos e istmo, volume tireoidiano, ecotextura do parênquima e avaliação das cadeias linfonodais cervicais por níveis."></textarea>
 </section>
 <section class="card no-print">
 <h2>4. Laudo</h2>
@@ -110,20 +110,20 @@ const checkedFoci=()=>[...document.querySelectorAll('input[name="foco"]:checked'
 function scoreCurrent(){
  const comp=split(value("composicao")),echo=split(value("ecogenicidade")),shape=split(value("forma")),margin=split(value("margem"));
  let foci=checkedFoci();if(foci.some(x=>x.label==="Sem focos ecogênicos"))foci=[];
- const total=comp.points+echo.points+shape.points+margin.points+foci.reduce((n,x)=>n+x.points,0);
- const cat=total<=1?"TR1":total===2?"TR2":total===3?"TR3":total<=6?"TR4":"TR5";
+ const total=comp.label==="Espongiforme"?0:comp.points+echo.points+shape.points+margin.points+foci.reduce((n,x)=>n+x.points,0);
+ const cat=total===0?"TR1":total===2?"TR2":total===3?"TR3":total>=4&&total<=6?"TR4":total>=7?"TR5":"REVISAR";
  const dims=[$("d1").value,$("d2").value,$("d3").value].map(Number).filter(x=>x>0);
  const max=dims.length?Math.max(...dims):0;
  let recommendation="";
  if(cat==="TR1"||cat==="TR2")recommendation="Não há indicação de PAAF ou seguimento de rotina pelo ACR TI-RADS.";
- else if(cat==="TR3")recommendation=max>=2.5?"Atinge o limiar de PAAF (≥ 2,5 cm).":max>=1.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 1,5 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
+ else if(cat==="TR3")recommendation=max>=2.5?"Atinge o limiar de PAAF (≥ 2,5 cm).":max>=1.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 1,5 cm); não atinge limiar de PAAF.":"Não atinge os limiares de PAAF ou seguimento.";
  else if(cat==="TR4")recommendation=max>=1.5?"Atinge o limiar de PAAF (≥ 1,5 cm).":max>=1?"Atinge o limiar de seguimento ultrassonográfico (≥ 1 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
  else recommendation=max>=1?"Atinge o limiar de PAAF (≥ 1 cm).":max>=0.5?"Atinge o limiar de seguimento ultrassonográfico (≥ 0,5 cm); não atinge limiar de PAAF.":"Abaixo dos limiares de PAAF e seguimento.";
  return{total,cat,recommendation,max,comp,echo,shape,margin,foci,dims};
 }
 const safe=t=>{const e=document.createElement("span");e.textContent=t;return e.innerHTML;};
 function showPreview(){const r=scoreCurrent();$("previa").innerHTML='<p class="score">Pontuação: '+r.total+' pontos — '+r.cat+'</p><p>'+safe(r.recommendation)+' <span class="small">(maior diâmetro informado: '+(r.max?r.max.toLocaleString("pt-BR")+' cm':"não informado")+')</span></p>';}
-function render(){ $("lista").innerHTML=nodules.map((n,i)=>'<div class="nodule"><strong>Nódulo '+(i+1)+' — '+safe(n.cat)+' ('+n.total+' pontos)</strong><p>'+safe(n.location)+' | '+safe(n.dimensions)+' cm</p><p>'+safe(n.recommendation)+'</p><button type="button" class="red" data-remove="'+i+'">Remover nódulo</button></div>').join("");}
+function render(){ $("lista").innerHTML=nodules.map((n,i)=>'<div class="nodule"><strong>Nódulo '+(i+1)+' — '+safe(n.cat)+' ('+n.total+' pontos)</strong><p>'+safe(n.location)+' | '+safe(n.dimensions)+' cm</p><p>'+safe(n.description)+'</p><p>'+safe(n.recommendation)+'</p><button type="button" class="red" data-remove="'+i+'">Remover nódulo</button></div>').join("");}
 function clearNodule(){
  ["d1","d2","d3","obs"].forEach(id=>$(id).value="");
  ["composicao","ecogenicidade","forma","margem"].forEach(id=>$(id).selectedIndex=0);
@@ -137,10 +137,10 @@ document.querySelectorAll('#composicao,#ecogenicidade,#forma,#margem,#d1,#d2,#d3
 $("adicionar").addEventListener("click",()=>{
  const r=scoreCurrent();
  const dims=[$("d1").value,$("d2").value,$("d3").value].filter(Boolean);
- if(!dims.length){alert("Informe pelo menos uma dimensão do nódulo.");return;}
+ if(dims.length!==3||dims.some(x=>Number(x)<=0)){alert("Informe as três dimensões do nódulo em centímetros, com valores maiores que zero.");return;}
  const location=value("lado")+", terço "+value("terco");
  const focus=r.foci.length?r.foci.map(x=>x.label).join(", "):"Nenhum";
- const desc="Composição: "+r.comp.label+". Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".";
+ const desc="Composição: "+r.comp.label+". "+(r.comp.label==="Espongiforme"?"Por ser espongiforme, os demais descritores não foram pontuados. ":"Ecogenicidade: "+r.echo.label+". Forma: "+r.shape.label+". Margem: "+r.margin.label+". Focos ecogênicos: "+focus+".");
  nodules.push({total:r.total,cat:r.cat,recommendation:r.recommendation,location,dimensions:dims.join(" × "),description:desc,obs:value("obs")});
  render();clearNodule();
 });
@@ -148,7 +148,7 @@ $("limpar").addEventListener("click",clearNodule);
 $("lista").addEventListener("click",e=>{const b=e.target.closest("[data-remove]");if(!b)return;nodules.splice(Number(b.dataset.remove),1);render();});
 $("gerar").addEventListener("click",()=>{
  let t="ULTRASSONOGRAFIA DA TIREOIDE E REGIÕES CERVICAIS\n\nPaciente: "+value("paciente")+"\nData: "+value("data")+"\nIndicação clínica: "+value("indicacao")+"\nTécnica: "+value("doppler")+"\n\nACHADOS:\n";
- t+=nodules.length?nodules.map((n,i)=>"Nódulo "+(i+1)+" — "+n.location+". Dimensões: "+n.dimensions+" cm. "+n.description+"\nACR TI-RADS: "+n.cat+" ("+n.total+" pontos). "+n.recommendation+"\n"+(n.obs?"Observações: "+n.obs+"\n":"")).join("\n"):"Não foram cadastrados nódulos focais.\n";
+ t+=nodules.length?nodules.map((n,i)=>"Nódulo "+(i+1)+" — "+n.location+". Dimensões: "+n.dimensions+" cm. "+n.description+"\nACR TI-RADS: "+n.cat+" ("+n.total+" pontos). "+n.recommendation+"\n"+(n.obs?"Observações: "+n.obs+"\n":"")).join("\n"):"Nenhum nódulo foi cadastrado nesta ferramenta.\n";
  if(value("obsGeral"))t+="\nOUTROS ACHADOS:\n"+value("obsGeral")+"\n";
  t+="\nClassificação e recomendações auxiliares baseadas no ACR TI-RADS; correlacionar com contexto clínico e protocolo vigente.";
  $("laudo").value=t;
