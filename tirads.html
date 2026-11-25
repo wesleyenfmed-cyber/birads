@@ -37,9 +37,16 @@ textarea{min-height:250px;line-height:1.5}
 @media(max-width:560px){.grid,.grid3{grid-template-columns:1fr 1fr}.grid3>div:last-child{grid-column:1/-1}}
 @media print{.no-print{display:none!important}body{background:#fff;padding:0;font-size:11pt}main{max-width:none}.card{box-shadow:none;border:0;border-bottom:1px solid #ddd;padding:8px;margin:0}textarea{border:0;padding:0;min-height:120px}h1{font-size:18pt}}
 </style>
-</head>
+<style>
+.refbtn{display:block;width:100%;margin:12px 0;padding:13px 16px;border:0;border-radius:10px;background:#0f766e;color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.refoverlay{display:none;position:fixed;inset:0;background:#0f172acc;z-index:9999;padding:14px;overflow:auto}
+.refoverlay.open{display:flex;align-items:flex-start;justify-content:center}
+.refmodal{background:#fff;color:#1f2937;width:min(760px,100%);margin:20px auto;border-radius:16px;padding:20px;box-shadow:0 15px 45px #0005;max-height:calc(100vh - 68px);overflow:auto}
+.refmodal h2{color:#0f766e;margin:0 0 14px}.refmodal h3{font-size:15px;color:#115e59;margin:18px 0 6px}.refmodal p{font-size:14px;line-height:1.5;margin:6px 0}.refmodal .ref{font-size:12px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:12px;margin-top:16px}.refclose{float:right;border:0;border-radius:8px;padding:8px 12px;background:#e2e8f0;font-weight:700;cursor:pointer}.refnote{font-size:12px;color:#92400e;background:#fffbeb;padding:10px;border-radius:8px;margin:10px 0}
+@media print{.refbtn,.refoverlay{display:none!important}}
+</style></head>
 <body>
-<main>
+<main><button class="refbtn" id="openRefs" type="button">Consultar valores de referência</button>
 <a class="toplink no-print" href="./">← Início das calculadoras</a>
 <h1>🩺 Calculadora ACR TI-RADS</h1>
 <p class="sub">ULTRASSONOGRAFIA DA TIREOIDE E REGIÕES CERVICAIS</p>
@@ -188,5 +195,5 @@ function updateVolume(){const v=(l,a,t)=>Number(value(l))*Number(value(a))*Numbe
 if("serviceWorker"in navigator&&location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
 })();
 </script>
-</body>
+<div class="refoverlay" id="refOverlay" role="dialog" aria-modal="true" aria-labelledby="refTitle"><section class="refmodal"><button class="refclose" id="refClose" type="button">Fechar ✕</button><h2 id="refTitle">Valores de referência</h2><div class="refnote">Material auxiliar de consulta. Valores aproximados para adultos, salvo indicação. Resultados acima ou abaixo da referência não estabelecem diagnóstico isoladamente; considerar idade, sexo, biotipo, técnica, sintomas e dados laboratoriais.</div><div id="refContent"></div></section></div><script>document.getElementById('refContent').innerHTML="<h3>Dimensões da tireoide em adultos</h3><p><b>Comprimento de cada lobo:</b> aproximadamente 4–6 cm. <b>Volume total:</b> referências frequentemente utilizadas: 10–15 mL em mulheres e 12–18 mL em homens.</p><p><b>Se volume aumentado:</b> pode corresponder a bócio, tireoidite ou variação individual relacionada a sexo, superfície corporal e ingestão de iodo. Correlacionar com função tireoidiana e padrão do parênquima.</p><p><b>Se volume reduzido:</b> pode ocorrer em tireoidite crônica atrófica ou após tratamento, mas deve ser interpretado com história clínica e laboratorial.</p><h3>Nódulos</h3><p>Não há tamanho que, isoladamente, determine benignidade ou malignidade. A pontuação ACR TI-RADS considera composição, ecogenicidade, forma, margens e focos ecogênicos; a indicação de PAAF/seguimento depende da categoria e do tamanho.</p><p class=\"ref\">Referências: University of Iowa, Thyroid Ultrasound Protocol; ACR TI-RADS e ACR Thyroid Ultrasound Worksheet. Os limites volumétricos variam entre populações e fontes.</p>";</script><script>(function(){const b=document.getElementById('openRefs'),o=document.getElementById('refOverlay'),c=document.getElementById('refClose');if(!b||!o||!c)return;b.addEventListener('click',()=>{o.classList.add('open');document.body.style.overflow='hidden';c.focus()});function close(){o.classList.remove('open');document.body.style.overflow=''}c.addEventListener('click',close);o.addEventListener('click',e=>{if(e.target===o)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&o.classList.contains('open'))close()});})();</script></body>
 </html>
