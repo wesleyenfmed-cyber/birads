@@ -45,10 +45,17 @@ body{background:white}
 .fotos{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
-</head>
+<style>
+.refbtn{display:block;width:100%;margin:12px 0;padding:13px 16px;border:0;border-radius:10px;background:#0f766e;color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.refoverlay{display:none;position:fixed;inset:0;background:#0f172acc;z-index:9999;padding:14px;overflow:auto}
+.refoverlay.open{display:flex;align-items:flex-start;justify-content:center}
+.refmodal{background:#fff;color:#1f2937;width:min(760px,100%);margin:20px auto;border-radius:16px;padding:20px;box-shadow:0 15px 45px #0005;max-height:calc(100vh - 68px);overflow:auto}
+.refmodal h2{color:#0f766e;margin:0 0 14px}.refmodal h3{font-size:15px;color:#115e59;margin:18px 0 6px}.refmodal p{font-size:14px;line-height:1.5;margin:6px 0}.refmodal .ref{font-size:12px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:12px;margin-top:16px}.refclose{float:right;border:0;border-radius:8px;padding:8px 12px;background:#e2e8f0;font-weight:700;cursor:pointer}.refnote{font-size:12px;color:#92400e;background:#fffbeb;padding:10px;border-radius:8px;margin:10px 0}
+@media print{.refbtn,.refoverlay{display:none!important}}
+</style></head>
 
 <body>
-<main>
+<main><button class="refbtn" id="openRefs" type="button">Consultar valores de referência</button>
 <a href='./' class='no-print' style='display:inline-block;margin-bottom:6px;color:#1d4ed8;text-decoration:none;font-weight:bold'>← Início das calculadoras</a>
 
 <h1>🩺 Calculadora BI-RADS®</h1>
@@ -500,5 +507,5 @@ if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));
 }
 </script>
-</body>
+<div class="refoverlay" id="refOverlay" role="dialog" aria-modal="true" aria-labelledby="refTitle"><section class="refmodal"><button class="refclose" id="refClose" type="button">Fechar ✕</button><h2 id="refTitle">Valores de referência</h2><div class="refnote">Material auxiliar de consulta. Valores aproximados para adultos, salvo indicação. Resultados acima ou abaixo da referência não estabelecem diagnóstico isoladamente; considerar idade, sexo, biotipo, técnica, sintomas e dados laboratoriais.</div><div id="refContent"></div></section></div><script>document.getElementById('refContent').innerHTML="<h3>Linfonodos axilares</h3><p><b>Aspecto habitual:</b> formato oval/reniforme, córtex fino e uniforme até 3 mm, hilo gorduroso central preservado.</p><p><b>Se córtex maior que 3 mm:</b> espessamento cortical pode ser reacional/inflamatório ou suspeito, conforme distribuição focal ou difusa, formato, hilo e vascularização. Perda do hilo, forma arredondada e fluxo cortical não hilar aumentam a suspeição.</p><h3>Parênquima mamário e nódulos</h3><p>Não existe uma medida única de normalidade para espessura mamária ou tamanho de nódulo. A avaliação deve seguir morfologia, orientação, margens, ecogenicidade, características posteriores, vascularização e contexto clínico, aplicando os descritores BI-RADS.</p><p><b>Se houver achado suspeito:</b> não classificar apenas pelo tamanho. A categoria BI-RADS depende do conjunto de características e da avaliação integrada.</p><p class=\"ref\">Referências: ACR Practice Parameter for Diagnostic Breast Ultrasound; ACR BI-RADS Atlas. O limite de 3 mm é referência morfológica para linfonodos axilares, não diagnóstico isolado.</p>";</script><script>(function(){const b=document.getElementById('openRefs'),o=document.getElementById('refOverlay'),c=document.getElementById('refClose');if(!b||!o||!c)return;b.addEventListener('click',()=>{o.classList.add('open');document.body.style.overflow='hidden';c.focus()});function close(){o.classList.remove('open');document.body.style.overflow=''}c.addEventListener('click',close);o.addEventListener('click',e=>{if(e.target===o)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&o.classList.contains('open'))close()});})();</script></body>
 </html>
