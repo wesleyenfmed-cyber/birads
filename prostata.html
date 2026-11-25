@@ -35,7 +35,9 @@ textarea{min-height:230px;line-height:1.5}.toplink{display:inline-block;color:#6
 <div><label for="bL">Longitudinal</label><input id="bL" type="number" min="0" step="0.1"></div>
 <div><label for="bAP">Anteroposterior</label><input id="bAP" type="number" min="0" step="0.1"></div>
 <div><label for="bT">Transversal</label><input id="bT" type="number" min="0" step="0.1"></div></div>
-<div class="result">Volume vesical pré-miccional estimado: <strong id="volBexiga">Não calculado</strong><br><small>Fórmula elipsoide: longitudinal × AP × transversal × 0,52.</small></div>
+<div class="result">Volume vesical pré-miccional estimado pelas dimensões: <strong id="volBexiga">Não calculado</strong><br><small>Fórmula elipsoide: longitudinal × AP × transversal × 0,52.</small></div>
+<label for="preMiccao">Volume pré-miccional medido (mL), se disponível</label><input id="preMiccao" type="number" min="0" step="1" placeholder="Informe o volume medido antes da micção">
+<div class="small">Se informado, este volume será usado como referência para calcular o percentual do resíduo pós-miccional. Caso contrário, será usado o volume estimado pelas dimensões.</div>
 <label for="parede">Parede vesical</label><select id="parede"><option>Aspecto habitual</option><option>Espessamento difuso</option><option>Espessamento focal</option><option>Irregularidade parietal</option><option>Não avaliável adequadamente</option></select>
 <div class="grid"><div><label for="espessura">Espessura parietal (mm), se mensurada</label><input id="espessura" type="number" min="0" step="0.1"></div>
 <div><label for="conteudo">Conteúdo / ecos intravesicais</label><select id="conteudo"><option>Anecóico</option><option>Ecos em suspensão / debris</option><option>Coágulo ou conteúdo organizado</option><option>Outro</option></select></div></div>
@@ -82,28 +84,29 @@ const update=()=>{
  $('volBexiga').textContent=vb?fmt(vb)+' mL':'Não calculado';
  $('volProstata').textContent=vp?fmt(vp)+' cm³':'Não calculado';
  $('pesoProstata').textContent=vp?fmt(vp*1.05)+' g':'Não calculado';
- const post=n('posMiccao');
+ const post=n('posMiccao'),preInformado=n('preMiccao'),preReferencia=preInformado||vb;
  let residual=post?fmt(post)+' mL':'Não informado';
- if(post&&vb)residual+=' ('+fmt(post/vb*100)+'% do volume pré-miccional estimado)';
+ if(post&&preReferencia)residual+=' ('+fmt(post/preReferencia*100)+'% do volume pré-miccional de referência)';
  $('resumoResidual').textContent=residual;
- return{vb,vp,post};
+ return{vb,vp,post,preInformado,preReferencia};
 };
-['bL','bAP','bT','pL','pAP','pT','posMiccao'].forEach(id=>$(id).addEventListener('input',update));
+['bL','bAP','bT','pL','pAP','pT','posMiccao','preMiccao'].forEach(id=>$(id).addEventListener('input',update));
 const val=id=>$(id).value.trim();
 const line=(label,id)=>val(id)?label+': '+val(id):'';
 function generate(){
- const {vb,vp,post}=update(),out=[];
+ const {vb,vp,post,preInformado,preReferencia}=update(),out=[];
  out.push('ULTRASSONOGRAFIA DA PRÓSTATA, VESÍCULAS SEMINAIS E BEXIGA');
  if(val('paciente'))out.push('Paciente: '+val('paciente'));
  if(val('data'))out.push('Data: '+val('data').split('-').reverse().join('/'));
  if(val('indicacao'))out.push('Indicação clínica: '+val('indicacao'));
  out.push('Técnica: '+val('via')+'.');
  out.push('\nBEXIGA: '+val('replecao')+'.');
- if(vb)out.push('Volume pré-miccional estimado em '+fmt(vb)+' mL.');
+ if(vb)out.push('Volume vesical pré-miccional estimado pelas dimensões em '+fmt(vb)+' mL.');
+ if(preInformado)out.push('Volume pré-miccional medido informado: '+fmt(preInformado)+' mL.');
  out.push('Parede vesical: '+val('parede')+(val('espessura')?' (espessura mensurada: '+val('espessura')+' mm)':'')+'.');
  out.push('Conteúdo: '+val('conteudo')+'. Cálculos: '+val('calculo').toLowerCase()+'. Divertículos: '+val('diverticulo').toLowerCase()+'.');
  if(val('obsBexiga'))out.push(val('obsBexiga'));
- if(post)out.push('Resíduo pós-miccional: '+fmt(post)+' mL'+(vb?' ('+fmt(post/vb*100)+'% do volume pré-miccional estimado)':'')+'.');
+ if(post)out.push('Resíduo pós-miccional: '+fmt(post)+' mL'+(preReferencia?' ('+fmt(post/preReferencia*100)+'% do volume pré-miccional de referência)':'')+'.');
  out.push('\nPRÓSTATA:');
  if(vp)out.push('Dimensões: '+val('pL')+' × '+val('pAP')+' × '+val('pT')+' cm. Volume estimado: '+fmt(vp)+' cm³; peso estimado: '+fmt(vp*1.05)+' g.');
  else out.push('Dimensões prostáticas não completamente informadas.');
