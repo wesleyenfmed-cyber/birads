@@ -58,7 +58,8 @@ textarea{min-height:230px;line-height:1.5}.toplink{display:inline-block;color:#6
 <div class="grid"><div><label for="contorno">Contornos</label><select id="contorno"><option>Regulares</option><option>Irregulares</option><option>Lobulados</option><option>Mal definidos</option></select></div>
 <div><label for="ecotextura">Ecotextura</label><select id="ecotextura"><option>Homogênea</option><option>Heterogênea</option><option>Hipoecoica</option><option>Com áreas nodulares</option></select></div>
 <div><label for="calcificacoes">Calcificações</label><select id="calcificacoes"><option>Ausentes</option><option>Presentes</option></select></div>
-<div><label for="protrusao">Protrusão prostática intravesical (mm)</label><input id="protrusao" type="number" min="0" step="0.1"></div></div>
+<div><label for="protrusao">IPP — protrusão prostática intravesical (mm)</label><input id="protrusao" type="number" min="0" step="0.1" placeholder="Medida no plano sagital mediano"></div></div>
+<div class="result">Índice de protrusão prostática (IPP): <strong id="classificacaoIPP">Não informado</strong><br><small>Classificação auxiliar pela medida em milímetros: grau I até 5 mm; grau II acima de 5 até 10 mm; grau III acima de 10 mm. Medir no plano sagital mediano, da ponta da protrusão até a linha do colo vesical.</small></div>
 <label for="lesao">Nódulos / lesões focais</label><select id="lesao"><option>Não caracterizados</option><option>Ausentes</option><option>Presentes</option></select>
 <label for="obsProstata">Descrição de achados prostáticos</label><textarea id="obsProstata" style="min-height:70px"></textarea>
 </section>
@@ -85,6 +86,9 @@ const update=()=>{
  $('volProstata').textContent=vp?fmt(vp)+' cm³':'Não calculado';
  $('pesoProstata').textContent=vp?fmt(vp*1.05)+' g':'Não calculado';
  const post=n('posMiccao'),preInformado=n('preMiccao'),preReferencia=preInformado||vb;
+ const ipp=n('protrusao');
+ const ippClass=ipp?(ipp<=5?'Grau I':ipp<=10?'Grau II':'Grau III'):'';
+ $('classificacaoIPP').textContent=ipp?ippClass+' ('+fmt(ipp)+' mm)':'Não informado';
  let residual=post?fmt(post)+' mL':'Não informado';
  if(post&&preReferencia)residual+=' ('+fmt(post/preReferencia*100)+'% do volume pré-miccional de referência)';
  $('resumoResidual').textContent=residual;
@@ -111,7 +115,7 @@ function generate(){
  if(vp)out.push('Dimensões: '+val('pL')+' × '+val('pAP')+' × '+val('pT')+' cm. Volume estimado: '+fmt(vp)+' cm³; peso estimado: '+fmt(vp*1.05)+' g.');
  else out.push('Dimensões prostáticas não completamente informadas.');
  out.push('Contornos '+val('contorno').toLowerCase()+', ecotextura '+val('ecotextura').toLowerCase()+'. Calcificações: '+val('calcificacoes').toLowerCase()+'.');
- if(val('protrusao'))out.push('Protrusão prostática intravesical: '+val('protrusao')+' mm.');
+ if(val('protrusao')){const ipp=n('protrusao'),grau=ipp<=5?'grau I':ipp<=10?'grau II':'grau III';out.push('Índice de protrusão prostática (IPP): '+fmt(ipp)+' mm ('+grau+').');}
  out.push('Lesões focais: '+val('lesao').toLowerCase()+'.');
  if(val('obsProstata'))out.push(val('obsProstata'));
  out.push('\nVESÍCULAS SEMINAIS: '+val('vesiculas')+'.');
