@@ -20,8 +20,15 @@ textarea{min-height:230px;line-height:1.5}.toplink{display:inline-block;color:#6
 @media(max-width:560px){.grid3{grid-template-columns:1fr 1fr}.grid3>div:last-child{grid-column:1/-1}}
 @media print{.no-print{display:none!important}body{background:white;padding:0}main{max-width:none}.card{box-shadow:none;border:0;border-bottom:1px solid #ddd;padding:8px;margin:0}textarea{border:0;padding:0;min-height:100px}h1{font-size:18pt}}
 </style>
-</head>
-<body><main>
+<style>
+.refbtn{display:block;width:100%;margin:12px 0;padding:13px 16px;border:0;border-radius:10px;background:#0f766e;color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.refoverlay{display:none;position:fixed;inset:0;background:#0f172acc;z-index:9999;padding:14px;overflow:auto}
+.refoverlay.open{display:flex;align-items:flex-start;justify-content:center}
+.refmodal{background:#fff;color:#1f2937;width:min(760px,100%);margin:20px auto;border-radius:16px;padding:20px;box-shadow:0 15px 45px #0005;max-height:calc(100vh - 68px);overflow:auto}
+.refmodal h2{color:#0f766e;margin:0 0 14px}.refmodal h3{font-size:15px;color:#115e59;margin:18px 0 6px}.refmodal p{font-size:14px;line-height:1.5;margin:6px 0}.refmodal .ref{font-size:12px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:12px;margin-top:16px}.refclose{float:right;border:0;border-radius:8px;padding:8px 12px;background:#e2e8f0;font-weight:700;cursor:pointer}.refnote{font-size:12px;color:#92400e;background:#fffbeb;padding:10px;border-radius:8px;margin:10px 0}
+@media print{.refbtn,.refoverlay{display:none!important}}
+</style></head>
+<body><main><button class="refbtn" id="openRefs" type="button">Consultar valores de referência</button>
 <a class="toplink no-print" href="./">← Início das calculadoras</a>
 <h1>🩺 Ultrassonografia da Próstata, Vesículas Seminais e Bexiga</h1>
 <p style="text-align:center;color:#64748b;font-size:12px">AVALIAÇÃO PROSTÁTICA E DO TRATO URINÁRIO INFERIOR</p>
@@ -130,4 +137,4 @@ $('copiar').addEventListener('click',async()=>{if(!$('laudo').value.trim())gener
 update();
 })();
 </script>
-</body></html>
+<div class="refoverlay" id="refOverlay" role="dialog" aria-modal="true" aria-labelledby="refTitle"><section class="refmodal"><button class="refclose" id="refClose" type="button">Fechar ✕</button><h2 id="refTitle">Valores de referência</h2><div class="refnote">Material auxiliar de consulta. Valores aproximados para adultos, salvo indicação. Resultados acima ou abaixo da referência não estabelecem diagnóstico isoladamente; considerar idade, sexo, biotipo, técnica, sintomas e dados laboratoriais.</div><div id="refContent"></div></section></div><script>document.getElementById('refContent').innerHTML="<h3>Próstata</h3><p><b>Volume:</b> em homens adultos saudáveis, estudo EAA encontrou intervalo de referência aproximado de 15–35 mL; valores médios frequentemente descritos ficam em torno de 20–25 mL. O volume tende a aumentar com a idade.</p><p><b>Se maior:</b> pode ser compatível com hiperplasia prostática benigna, mas não confirma obstrução. Correlacionar com sintomas, resíduo pós-miccional e avaliação urológica.</p><p><b>Se menor:</b> pode ocorrer após tratamentos, em atrofia ou variação individual; interpretar no contexto clínico.</p><h3>Vesículas seminais</h3><p>Diâmetro anteroposterior de referência aproximado: 6–16 mm em estudo de homens saudáveis.</p><p><b>Se dilatadas:</b> considerar obstrução distal/alterações dos ductos ejaculatórios, entre outras causas; avaliar simetria e contexto clínico.</p><h3>Bexiga</h3><p>A espessura da parede depende fortemente do grau de repleção. Evitar interpretar uma medida sem considerar o enchimento vesical; parede aparentemente espessada em bexiga pouco repleta pode ser artefato.</p><p class=\"ref\">Referências: EAA ultrasound study on healthy, fertile men (Lotti et al., 2022); NCBI Bookshelf, Prostate Imaging.</p>";</script><script>(function(){const b=document.getElementById('openRefs'),o=document.getElementById('refOverlay'),c=document.getElementById('refClose');if(!b||!o||!c)return;b.addEventListener('click',()=>{o.classList.add('open');document.body.style.overflow='hidden';c.focus()});function close(){o.classList.remove('open');document.body.style.overflow=''}c.addEventListener('click',close);o.addEventListener('click',e=>{if(e.target===o)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&o.classList.contains('open'))close()});})();</script></body></html>
