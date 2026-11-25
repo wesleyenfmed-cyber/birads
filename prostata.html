@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#7c3aed"><meta name="description" content="Ferramenta auxiliar para ultrassonografia da próstata, vesículas seminais e bexiga.">
+<title>Ultrassonografia — Próstata, Vesículas Seminais e Bexiga</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--p:#7c3aed;--bg:#f5f3ff;--bd:#c4b5fd;--ink:#1f2937}*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;padding:14px;background:var(--bg);color:var(--ink)}main{max-width:820px;margin:auto}
+h1{text-align:center;color:#5b21b6;font-size:22px}h2{font-size:17px;color:#6d28d9;border-left:4px solid var(--p);padding-left:9px}
+.card{background:white;padding:16px;border-radius:13px;margin:12px 0;box-shadow:0 2px 6px #0001}
+label{display:block;font-size:13px;font-weight:bold;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:#fafafa;font-size:15px;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+button{padding:12px;border:0;border-radius:9px;background:var(--p);color:white;font-weight:bold;cursor:pointer;margin:8px 6px 0 0}
+button.secondary{background:#475569}button.green{background:#059669}
+small,.small{font-size:12px;color:#64748b;line-height:1.45}.result{padding:10px;background:#f5f3ff;border-radius:8px;margin-top:10px;line-height:1.5}
+textarea{min-height:230px;line-height:1.5}.toplink{display:inline-block;color:#6d28d9;text-decoration:none;font-weight:bold;margin-bottom:5px}
+@media(max-width:560px){.grid3{grid-template-columns:1fr 1fr}.grid3>div:last-child{grid-column:1/-1}}
+@media print{.no-print{display:none!important}body{background:white;padding:0}main{max-width:none}.card{box-shadow:none;border:0;border-bottom:1px solid #ddd;padding:8px;margin:0}textarea{border:0;padding:0;min-height:100px}h1{font-size:18pt}}
+</style>
+</head>
+<body><main>
+<a class="toplink no-print" href="./">← Início das calculadoras</a>
+<h1>🩺 Ultrassonografia da Próstata, Vesículas Seminais e Bexiga</h1>
+<p style="text-align:center;color:#64748b;font-size:12px">AVALIAÇÃO PROSTÁTICA E DO TRATO URINÁRIO INFERIOR</p>
+<section class="card no-print"><h2>1. Identificação</h2><div class="grid">
+<div><label for="paciente">Paciente</label><input id="paciente"></div><div><label for="data">Data do exame</label><input id="data" type="date"></div>
+<div><label for="indicacao">Indicação clínica</label><input id="indicacao"></div><div><label for="via">Via de exame</label><select id="via"><option>Suprapúbica / abdominal</option><option>Transretal</option><option>Combinada</option></select></div>
+</div></section>
+<section class="card no-print"><h2>2. Bexiga</h2>
+<label for="replecao">Grau de repleção</label><select id="replecao"><option>Adequada</option><option>Parcialmente repleta</option><option>Distensão insuficiente para avaliação completa</option></select>
+<label>Dimensões vesicais pré-miccional (cm)</label><div class="grid3">
+<div><label for="bL">Longitudinal</label><input id="bL" type="number" min="0" step="0.1"></div>
+<div><label for="bAP">Anteroposterior</label><input id="bAP" type="number" min="0" step="0.1"></div>
+<div><label for="bT">Transversal</label><input id="bT" type="number" min="0" step="0.1"></div></div>
+<div class="result">Volume vesical pré-miccional estimado: <strong id="volBexiga">Não calculado</strong><br><small>Fórmula elipsoide: longitudinal × AP × transversal × 0,52.</small></div>
+<label for="parede">Parede vesical</label><select id="parede"><option>Aspecto habitual</option><option>Espessamento difuso</option><option>Espessamento focal</option><option>Irregularidade parietal</option><option>Não avaliável adequadamente</option></select>
+<div class="grid"><div><label for="espessura">Espessura parietal (mm), se mensurada</label><input id="espessura" type="number" min="0" step="0.1"></div>
+<div><label for="conteudo">Conteúdo / ecos intravesicais</label><select id="conteudo"><option>Anecóico</option><option>Ecos em suspensão / debris</option><option>Coágulo ou conteúdo organizado</option><option>Outro</option></select></div></div>
+<label for="calculo">Cálculos vesicais</label><select id="calculo"><option>Ausentes</option><option>Presentes</option><option>Não avaliados</option></select>
+<label for="diverticulo">Divertículos</label><select id="diverticulo"><option>Ausentes</option><option>Presentes</option></select>
+<label for="obsBexiga">Outros achados vesicais</label><textarea id="obsBexiga" style="min-height:70px"></textarea>
+</section>
+<section class="card no-print"><h2>3. Avaliação pós-miccional</h2>
+<label for="posMiccao">Volume residual pós-miccional (mL)</label><input id="posMiccao" type="number" min="0" step="1">
+<div class="result">Resíduo pós-miccional: <strong id="resumoResidual">Não informado</strong><br><small>O percentual é calculado em relação ao volume pré-miccional estimado, quando disponível. A interpretação deve considerar o contexto clínico.</small></div>
+</section>
+<section class="card no-print"><h2>4. Próstata</h2>
+<label>Dimensões prostáticas (cm)</label><div class="grid3">
+<div><label for="pL">Longitudinal</label><input id="pL" type="number" min="0" step="0.1"></div>
+<div><label for="pAP">Anteroposterior</label><input id="pAP" type="number" min="0" step="0.1"></div>
+<div><label for="pT">Transversal</label><input id="pT" type="number" min="0" step="0.1"></div></div>
+<div class="result">Volume prostático estimado: <strong id="volProstata">Não calculado</strong><br>Peso estimado (referência aproximada): <strong id="pesoProstata">Não calculado</strong><br><small>Volume = longitudinal × AP × transversal × 0,52. Peso estimado = volume × 1,05. São estimativas, sujeitas à técnica e à via de exame.</small></div>
+<div class="grid"><div><label for="contorno">Contornos</label><select id="contorno"><option regulares</option><option>Irregulares</option><option>Lobulados</option><option>Mal definidos</option></select></div>
+<div><label for="ecotextura">Ecotextura</label><select id="ecotextura"><option>Homogênea</option><option>Heterogênea</option><option>Hipoecoica</option><option>Com áreas nodulares</option></select></div>
+<div><label for="calcificacoes">Calcificações</label><select id="calcificacoes"><option>Ausentes</option><option>Presentes</option></select></div>
+<div><label for="protrusao">Protrusão prostática intravesical (mm)</label><input id="protrusao" type="number" min="0" step="0.1"></div></div>
+<label for="lesao">Nódulos / lesões focais</label><select id="lesao"><option>Não caracterizados</option><option>Ausentes</option><option>Presentes</option></select>
+<label for="obsProstata">Descrição de achados prostáticos</label><textarea id="obsProstata" style="min-height:70px"></textarea>
+</section>
+<section class="card no-print"><h2>5. Vesículas seminais</h2>
+<label for="vesiculas">Aspecto geral</label><select id="vesiculas"><option>Simétricas, com morfologia e dimensões habituais</option><option>Assimétricas</option><option>Distendidas</option><option>Reduzidas / atróficas</option><option>Não caracterizadas</option></select>
+<div class="grid"><div><label for="vsD">Diâmetro da vesícula seminal direita (mm), se mensurado</label><input id="vsD" type="number" min="0" step="0.1"></div>
+<div><label for="vsE">Diâmetro da vesícula seminal esquerda (mm), se mensurado</label><input id="vsE" type="number" min="0" step="0.1"></div></div>
+<label for="obsVesiculas">Observações</label><textarea id="obsVesiculas" style="min-height:65px"></textarea>
+</section>
+<section class="card no-print"><h2>6. Observações adicionais</h2><textarea id="obsGeral" style="min-height:85px" placeholder="Outros achados relevantes do exame."></textarea></section>
+<section class="card no-print"><h2>7. Laudo</h2><button type="button" id="gerar">GERAR LAUDO</button><button type="button" class="secondary" id="imprimir">IMPRIMIR</button><button type="button" class="green" id="copiar">COPIAR LAUDO</button></section>
+<section class="card"><h2>LAUDO DE ULTRASSONOGRAFIA</h2><textarea id="laudo" placeholder="O laudo gerado aparecerá aqui e poderá ser editado."></textarea></section>
+<p class="small" style="text-align:center">Ferramenta auxiliar para estruturação do laudo. Confira as medidas, os cálculos e os achados nas imagens antes de validar e assinar o exame.</p>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const n=id=>{const v=parseFloat($(id).value);return Number.isFinite(v)&&v>0?v:0};
+const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const volume=(a,b,c)=>a&&b&&c?a*b*c*.52:0;
+const update=()=>{
+ const vb=volume(n('bL'),n('bAP'),n('bT')),vp=volume(n('pL'),n('pAP'),n('pT'));
+ $('volBexiga').textContent=vb?fmt(vb)+' mL':'Não calculado';
+ $('volProstata').textContent=vp?fmt(vp)+' cm³':'Não calculado';
+ $('pesoProstata').textContent=vp?fmt(vp*1.05)+' g':'Não calculado';
+ const post=n('posMiccao');
+ let residual=post?fmt(post)+' mL':'Não informado';
+ if(post&&vb)residual+=' ('+fmt(post/vb*100)+'% do volume pré-miccional estimado)';
+ $('resumoResidual').textContent=residual;
+ return{vb,vp,post};
+};
+['bL','bAP','bT','pL','pAP','pT','posMiccao'].forEach(id=>$(id).addEventListener('input',update));
+const val=id=>$(id).value.trim();
+const line=(label,id)=>val(id)?label+': '+val(id):'';
+function generate(){
+ const {vb,vp,post}=update(),out=[];
+ out.push('ULTRASSONOGRAFIA DA PRÓSTATA, VESÍCULAS SEMINAIS E BEXIGA');
+ if(val('paciente'))out.push('Paciente: '+val('paciente'));
+ if(val('data'))out.push('Data: '+val('data').split('-').reverse().join('/'));
+ if(val('indicacao'))out.push('Indicação clínica: '+val('indicacao'));
+ out.push('Técnica: '+val('via')+'.');
+ out.push('\nBEXIGA: '+val('replecao')+'.');
+ if(vb)out.push('Volume pré-miccional estimado em '+fmt(vb)+' mL.');
+ out.push('Parede vesical: '+val('parede')+(val('espessura')?' (espessura mensurada: '+val('espessura')+' mm)':'')+'.');
+ out.push('Conteúdo: '+val('conteudo')+'. Cálculos: '+val('calculo').toLowerCase()+'. Divertículos: '+val('diverticulo').toLowerCase()+'.');
+ if(val('obsBexiga'))out.push(val('obsBexiga'));
+ if(post)out.push('Resíduo pós-miccional: '+fmt(post)+' mL'+(vb?' ('+fmt(post/vb*100)+'% do volume pré-miccional estimado)':'')+'.');
+ out.push('\nPRÓSTATA:');
+ if(vp)out.push('Dimensões: '+val('pL')+' × '+val('pAP')+' × '+val('pT')+' cm. Volume estimado: '+fmt(vp)+' cm³; peso estimado: '+fmt(vp*1.05)+' g.');
+ else out.push('Dimensões prostáticas não completamente informadas.');
+ out.push('Contornos '+val('contorno').toLowerCase()+', ecotextura '+val('ecotextura').toLowerCase()+'. Calcificações: '+val('calcificacoes').toLowerCase()+'.');
+ if(val('protrusao'))out.push('Protrusão prostática intravesical: '+val('protrusao')+' mm.');
+ out.push('Lesões focais: '+val('lesao').toLowerCase()+'.');
+ if(val('obsProstata'))out.push(val('obsProstata'));
+ out.push('\nVESÍCULAS SEMINAIS: '+val('vesiculas')+'.');
+ if(val('vsD')||val('vsE'))out.push('Diâmetros informados — direita: '+(val('vsD')||'não informado')+' mm; esquerda: '+(val('vsE')||'não informado')+' mm.');
+ if(val('obsVesiculas'))out.push(val('obsVesiculas'));
+ if(val('obsGeral'))out.push('\nOBSERVAÇÕES: '+val('obsGeral'));
+ $('laudo').value=out.join('\n');
+}
+$('gerar').addEventListener('click',generate);
+$('imprimir').addEventListener('click',()=>{if(!$('laudo').value.trim())generate();window.print()});
+$('copiar').addEventListener('click',async()=>{if(!$('laudo').value.trim())generate();try{await navigator.clipboard.writeText($('laudo').value);$('copiar').textContent='LAUDO COPIADO';setTimeout(()=>$('copiar').textContent='COPIAR LAUDO',1800)}catch(e){$('laudo').select();document.execCommand('copy')}});
+update();
+})();
+</script>
+</body></html>
